@@ -23,10 +23,7 @@ public class MyAccount extends AppCompatActivity {
         departmentfieldbox = findViewById(R.id.deptfield);
         sectionfieldbox = findViewById(R.id.sectionn);
         rollnumfieldbox = findViewById(R.id.rn);
-        CreateAccountPage c = new CreateAccountPage();
-        Intent datastorage = getIntent();
-        String data1 = datastorage.getStringExtra("registernumber");
-        regfieldbox.setText(data1);
+
 
     }
 
