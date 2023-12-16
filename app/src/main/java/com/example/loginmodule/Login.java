@@ -1,6 +1,7 @@
 package com.example.loginmodule;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
@@ -69,7 +70,12 @@ public class Login extends AppCompatActivity {
                     Toast.makeText(Login.this, "Enter Password", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                SharedPreferences cache = getSharedPreferences("MyPreferences",MODE_PRIVATE);
+                String useridCache = cache.getString("cacheUserId","");
+                String passCache = cache.getString("cachePassword","");
+                /*if (!useridCache.isEmpty() && !passCache.isEmpty()){
 
+                }*/
                 logindb.child("users").child(numberfield).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {

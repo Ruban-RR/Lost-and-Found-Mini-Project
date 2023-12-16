@@ -1,15 +1,17 @@
 package com.example.loginmodule;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -18,15 +20,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import homepagemodule.HomePage;
-import homepagemodule.MyAccount;
-
 public class CreateAccountPage extends AppCompatActivity {
 
     public static String num,password,confirmPassword,dept, sec,roll;
     private Button backto, creatingbutton;
     private EditText registerfield, passwordfield, repasswordfield, department, section, rollno;
     private DatabaseReference db;
-
+    private SharedPreferences cache;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,8 +107,18 @@ public class CreateAccountPage extends AppCompatActivity {
                     db.child("users").child(num).child("department").setValue(dept);
                     db.child("users").child(num).child("section").setValue(sec);
                     db.child("users").child(num).child("roll number").setValue(roll);
+                    SharedPreferences.Editor edit = cache.edit();
+                    edit.putString("cacheUserID",num);
+                    edit.putString("cachePassword",password);
+                    edit.putString("cacheDepartment",dept);
+                    edit.putString("cacheSection",sec);
+                    edit.putString("cacheRoll",roll);
+                    edit.apply();
+
+
                     Intent tohome = new Intent(CreateAccountPage.this, HomePage.class);
                     startActivity(tohome);
+                    finish();
                 } else {
                     // User already exists
                     Toast.makeText(CreateAccountPage.this, "User Id already exist!", Toast.LENGTH_SHORT).show();
