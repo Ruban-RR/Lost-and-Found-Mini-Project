@@ -33,6 +33,7 @@ public class CreateAccountPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account_page);
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        cache = getSharedPreferences("MyPreferences", MODE_PRIVATE);
 
 
         backto = findViewById(R.id.back2);
@@ -113,10 +114,11 @@ public class CreateAccountPage extends AppCompatActivity {
                     edit.putString("cacheDepartment",dept);
                     edit.putString("cacheSection",sec);
                     edit.putString("cacheRoll",roll);
-                    edit.apply();
+
 
 
                     Intent tohome = new Intent(CreateAccountPage.this, HomePage.class);
+                    tohome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(tohome);
                     finish();
                 } else {
