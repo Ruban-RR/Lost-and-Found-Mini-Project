@@ -114,7 +114,7 @@ public class CreateAccountPage extends AppCompatActivity {
                     edit.putString("cacheDepartment",dept);
                     edit.putString("cacheSection",sec);
                     edit.putString("cacheRoll",roll);
-
+                    edit.apply();
 
 
                     Intent tohome = new Intent(CreateAccountPage.this, HomePage.class);
