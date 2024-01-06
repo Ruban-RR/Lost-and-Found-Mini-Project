@@ -31,6 +31,7 @@ public class Login extends AppCompatActivity {
     TextView accountCreation;
 
     private DatabaseReference logindb;
+    private SharedPreferences cache;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +57,13 @@ public class Login extends AppCompatActivity {
                 startActivity(backButton);
             }
         });
+
+        cache = getSharedPreferences("MyPreferences",MODE_PRIVATE);
+        String useridCache = cache.getString("cacheUserId","");
+        String passCache = cache.getString("cachePassword","");
+        if (!useridCache.isEmpty() && !passCache.isEmpty()){
+            loginFunc(useridCache, passCache);
+        }
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,35 +78,8 @@ public class Login extends AppCompatActivity {
                     Toast.makeText(Login.this, "Enter Password", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                SharedPreferences cache = getSharedPreferences("MyPreferences",MODE_PRIVATE);
-                String useridCache = cache.getString("cacheUserId","");
-                String passCache = cache.getString("cachePassword","");
-                /*if (!useridCache.isEmpty() && !passCache.isEmpty()){
 
-                }*/
-                logindb.child("users").child(numberfield).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()){
-                             String passondb = snapshot.child("password").getValue(String.class);
-                            if (passwordfield.equals(passondb)){
-                                Toast.makeText(Login.this, "Successfully Logged in",Toast.LENGTH_SHORT).show();
-                                Intent loginButton = new Intent(Login.this, HomePage.class);
-                                startActivity(loginButton);
-                            }else {
-                                Toast.makeText(Login.this, "Incorrect password",Toast.LENGTH_SHORT).show();
-                            }
-                        }else{
-                            Toast.makeText(Login.this, "User ID not exist",Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(Login.this, "Some error on logging in", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                loginFunc(numberfield, passwordfield);
 
             }
         });
@@ -117,4 +98,30 @@ public class Login extends AppCompatActivity {
 
 
     }
+    public void loginFunc(String numberfield, String passwordfield){
+        logindb.child("users").child(numberfield).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    String passondb = snapshot.child("password").getValue(String.class);
+                    if (passwordfield.equals(passondb)){
+                        Toast.makeText(Login.this, "Successfully Logged in",Toast.LENGTH_SHORT).show();
+                        Intent loginButton = new Intent(Login.this, HomePage.class);
+                        startActivity(loginButton);
+                    }else {
+                        Toast.makeText(Login.this, "Incorrect password",Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    Toast.makeText(Login.this, "User ID not exist",Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(Login.this, "Some error on logging in", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 }

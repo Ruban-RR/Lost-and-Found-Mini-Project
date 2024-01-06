@@ -30,14 +30,14 @@
         android:id="@+id/createText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="132dp"
+        android:layout_marginTop="88dp"
         android:text="Register Here"
         android:textAlignment="center"
         android:textColor="#F3EDED"
         android:textSize="29sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.521"
+        app:layout_constraintHorizontal_bias="0.518"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -45,7 +45,7 @@
         android:id="@+id/secField"
         android:layout_width="75dp"
         android:layout_height="45dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/cutomized_edittext"
         android:ems="10"
         android:hint="Section"
@@ -54,15 +54,15 @@
         android:textColorHint="#F3EFEF"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.714"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.165"
+        app:layout_constraintStart_toEndOf="@+id/deptField"
         app:layout_constraintTop_toBottomOf="@+id/regRepass" />
 
     <EditText
         android:id="@+id/regPass"
         android:layout_width="210dp"
         android:layout_height="45dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/cutomized_edittext"
         android:ems="10"
         android:fontFamily="sans-serif-light"
@@ -72,7 +72,7 @@
         android:textColorHint="#EDE9E9"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.522"
+        app:layout_constraintHorizontal_bias="0.514"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/regNo" />
 
@@ -80,7 +80,7 @@
         android:id="@+id/deptField"
         android:layout_width="115dp"
         android:layout_height="45dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/cutomized_edittext"
         android:ems="10"
         android:hint="Department"
@@ -90,7 +90,7 @@
         android:textColorHint="#FBF7F7"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.354"
+        app:layout_constraintHorizontal_bias="0.353"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/regRepass" />
 
@@ -98,7 +98,7 @@
         android:id="@+id/regRepass"
         android:layout_width="210dp"
         android:layout_height="45dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/cutomized_edittext"
         android:ems="10"
         android:hint="Re-type password"
@@ -107,7 +107,7 @@
         android:textColorHint="#F4F2F2"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.522"
+        app:layout_constraintHorizontal_bias="0.514"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/regPass" />
 
@@ -115,7 +115,7 @@
         android:id="@+id/regNo"
         android:layout_width="210dp"
         android:layout_height="45dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/cutomized_edittext"
         android:fontFamily="sans-serif-light"
         android:hint="Register No."
@@ -126,7 +126,7 @@
         android:textColorHint="#FBFAFA"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.522"
+        app:layout_constraintHorizontal_bias="0.514"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/createText" />
 
@@ -142,9 +142,9 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rollField" />
+        app:layout_constraintTop_toBottomOf="@+id/rollField"
+        app:layout_constraintVertical_bias="0.129" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
@@ -178,7 +178,7 @@
         android:id="@+id/rollField"
         android:layout_width="210dp"
         android:layout_height="45dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/cutomized_edittext"
         android:ems="10"
         android:hint="Roll Number"
@@ -187,7 +187,7 @@
         android:textColorHint="#F8F0F0"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.522"
+        app:layout_constraintHorizontal_bias="0.514"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/secField" />
 
