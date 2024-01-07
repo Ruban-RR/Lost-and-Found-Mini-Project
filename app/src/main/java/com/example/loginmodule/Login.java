@@ -31,13 +31,15 @@ public class Login extends AppCompatActivity {
     TextView accountCreation;
 
     private DatabaseReference logindb;
-    private SharedPreferences cache;
+    private SharedPreferences cachefromlogin;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        cachefromlogin = getSharedPreferences("MyPreferencesFromLogin", MODE_PRIVATE);
         logindb = FirebaseDatabase.getInstance().getReference();
 
         back = (Button) findViewById(R.id.back2);
@@ -58,18 +60,15 @@ public class Login extends AppCompatActivity {
             }
         });
 
-        cache = getSharedPreferences("MyPreferences",MODE_PRIVATE);
-        String useridCache = cache.getString("cacheUserId","");
-        String passCache = cache.getString("cachePassword","");
-        if (!useridCache.isEmpty() && !passCache.isEmpty()){
-            loginFunc(useridCache, passCache);
-        }
+
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String numberfield = userid.getText().toString();
                 String passwordfield = password.getText().toString();
-
+                SharedPreferences.Editor edit = cachefromlogin.edit();
+                edit.putString("useridfromlogin",numberfield);
+                edit.putString("passwordfromlogin",passwordfield);
                 if (numberfield.isEmpty()) {
                     Toast.makeText(Login.this, "Enter Register Number!", Toast.LENGTH_SHORT).show();
                     return;
@@ -90,12 +89,6 @@ public class Login extends AppCompatActivity {
                 startActivity(buttonforcreatenew);
             }
         });
-
-
-
-
-
-
 
     }
     public void loginFunc(String numberfield, String passwordfield){
