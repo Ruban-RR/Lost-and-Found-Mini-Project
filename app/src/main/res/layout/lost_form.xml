@@ -37,6 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -48,6 +49,7 @@
             android:layout_width="210dp"
             android:layout_height="45dp"
             android:hint="Hint1"
+            android:layout_marginBottom="12dp"
             android:background="@drawable/cutomized_edittext"
             tools:layout_editor_absoluteX="101dp"
             tools:layout_editor_absoluteY="218dp" />
@@ -56,7 +58,7 @@
             android:layout_width="210dp"
             android:layout_height="45dp"
             android:hint="Hint2"
-
+            android:layout_marginBottom="12dp"
             android:background="@drawable/cutomized_edittext"
             tools:layout_editor_absoluteX="101dp"
             tools:layout_editor_absoluteY="218dp" />
@@ -65,7 +67,7 @@
             android:layout_width="210dp"
             android:layout_height="45dp"
             android:hint="Hint3"
-
+            android:layout_marginBottom="12dp"
             android:background="@drawable/cutomized_edittext"
             tools:layout_editor_absoluteX="101dp"
             tools:layout_editor_absoluteY="218dp" />
@@ -74,17 +76,18 @@
             android:layout_width="210dp"
             android:layout_height="45dp"
             android:hint="Hint4"
-
+            android:layout_marginBottom="12dp"
             android:background="@drawable/cutomized_edittext"
             tools:layout_editor_absoluteX="101dp"
             tools:layout_editor_absoluteY="218dp" />
+
         <EditText
             android:id="@+id/ED5"
             android:layout_width="210dp"
             android:layout_height="45dp"
-            android:hint="Hint5"
-
+            android:layout_marginBottom="12dp"
             android:background="@drawable/cutomized_edittext"
+            android:hint="Hint5"
             tools:layout_editor_absoluteX="101dp"
             tools:layout_editor_absoluteY="218dp" />
     </LinearLayout>

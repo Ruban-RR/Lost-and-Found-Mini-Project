@@ -13,7 +13,10 @@ import android.widget.Spinner;
 import com.example.loginmodule.R;
 
 public class LostForm extends AppCompatActivity {
-    final LinearLayout linearLayoutContainer = findViewById(R.id.linearLayoutContainer);
+
+    private LinearLayout llc;
+    private EditText editTextMobile, editTextWatch, editTextWatch2, editTextBag, editTextBag2, editTextBag3, editTextPurse, editTextPurse2, editTextPurse3, editTextPurse4 ;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,49 +24,107 @@ public class LostForm extends AppCompatActivity {
 
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        // Initialize layout elements after setting the content view
+        llc = findViewById(R.id.linearLayoutContainer);
+        editTextMobile = findViewById(R.id.ED1);
+        editTextWatch = findViewById(R.id.ED2);
+        editTextWatch2 = findViewById(R.id.ED3);
+        editTextBag = findViewById(R.id.ED3);
+        editTextBag2 = findViewById(R.id.ED4);
+        editTextBag3 = findViewById(R.id.ED5);
+        editTextPurse = findViewById(R.id.ED4);
 
-        String[] items = {"Mobile", "Wrist Watch", "Bag", "Purse"};
+        // Initially hide the EditText views
+        llc.setVisibility(View.GONE);
+        editTextMobile.setVisibility(View.GONE);
+        editTextWatch.setVisibility(View.GONE);
+        editTextWatch2.setVisibility(View.GONE);
+        editTextBag.setVisibility(View.GONE);
+        editTextBag2.setVisibility(View.GONE);
+        editTextBag3.setVisibility(View.GONE);
+        editTextPurse.setVisibility(View.GONE);
+
+        String[] items = {"Select an Item","Mobile", "Wrist Watch", "Bag", "Purse"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(LostForm.this, android.R.layout.simple_spinner_item, items);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         Spinner spin = findViewById(R.id.lostthing);
         spin.setAdapter(adapter);
-
-
-
         spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                // Clear previous EditText fields
-                linearLayoutContainer.removeAllViews();
-
                 // Get the selected item
                 String selectedValue = items[position];
 
-                // Dynamically create and add EditText fields based on the selected item
-                if (selectedValue.equals("Mobile")) {
-                    addEditText("Hint1");
-                    addEditText("Hint2");
-                } else if (selectedValue.equals("Bag")) {
-                    addEditText("Hint3");
-                    addEditText("Hint4");
+                // Show/hide the EditText views based on the selected
+                    if(selectedValue.equals("Select an Item")){
+                        llc.setVisibility(View.GONE);
+                        editTextMobile.setVisibility(View.GONE);
+                        editTextBag.setVisibility(View.GONE);
+                        editTextBag2.setVisibility(View.GONE);
+                        editTextWatch.setVisibility(View.GONE);
+                        editTextWatch2.setVisibility(View.GONE);
+                        editTextBag3.setVisibility(View.GONE);
+                        editTextPurse.setVisibility(View.GONE);
+                    }
+                    else if (selectedValue.equals("Mobile")) {
+                        llc.setVisibility(View.VISIBLE);
+                        editTextMobile.setVisibility(View.VISIBLE);
+                        editTextBag.setVisibility(View.GONE);
+                        editTextBag2.setVisibility(View.GONE);
+                        editTextWatch.setVisibility(View.GONE);
+                        editTextWatch2.setVisibility(View.GONE);
+                        editTextBag3.setVisibility(View.GONE);
+                        editTextPurse.setVisibility(View.GONE);
+                    } else if (selectedValue.equals("Bag")) {
+                        llc.setVisibility(View.VISIBLE);
+                        editTextMobile.setVisibility(View.GONE);
+                        editTextBag.setVisibility(View.VISIBLE);
+                        editTextBag2.setVisibility(View.VISIBLE);
+                        editTextWatch.setVisibility(View.GONE);
+                        editTextWatch2.setVisibility(View.GONE);
+                        editTextBag3.setVisibility(View.VISIBLE);
+                        editTextPurse.setVisibility(View.GONE);
+                    }
+                    else if (selectedValue.equals("Wrist Watch")) {
+                        llc.setVisibility(View.VISIBLE);
+                        editTextMobile.setVisibility(View.GONE);
+                        editTextBag.setVisibility(View.GONE);
+                        editTextBag2.setVisibility(View.GONE);
+                        editTextWatch.setVisibility(View.VISIBLE);
+                        editTextWatch2.setVisibility(View.VISIBLE);
+                        editTextBag3.setVisibility(View.GONE);
+                        editTextPurse.setVisibility(View.GONE);
+                    } else if (selectedValue.equals("Bag")) {
+                        llc.setVisibility(View.VISIBLE);
+                        editTextMobile.setVisibility(View.GONE);
+                        editTextBag.setVisibility(View.VISIBLE);
+                        editTextBag2.setVisibility(View.VISIBLE);
+                        editTextWatch.setVisibility(View.GONE);
+                        editTextWatch2.setVisibility(View.GONE);
+                        editTextBag3.setVisibility(View.VISIBLE);
+                        editTextPurse.setVisibility(View.GONE);
+                    }
+                    else if (selectedValue.equals("Purse")) {
+                        llc.setVisibility(View.VISIBLE);
+                        editTextMobile.setVisibility(View.GONE);
+                        editTextBag.setVisibility(View.GONE);
+                        editTextBag2.setVisibility(View.GONE);
+                        editTextWatch.setVisibility(View.GONE);
+                        editTextWatch2.setVisibility(View.GONE);
+                        editTextBag3.setVisibility(View.GONE);
+                        editTextPurse.setVisibility(View.VISIBLE);
+                    }else {
+                        // For other items, hide all EditText views
+                        llc.setVisibility(View.GONE);
+                    }
                 }
-                // Add more conditions for other items as needed
-            }
+
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
                 // Do nothing here
             }
         });
-    }
-
-    private void addEditText(String hint) {
-        EditText editText = new EditText(this);
-        editText.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT));
-        editText.setHint(hint);
-        linearLayoutContainer.addView(editText);
     }
 }
