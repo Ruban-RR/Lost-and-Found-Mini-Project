@@ -32,6 +32,62 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
+    <LinearLayout
+        android:id="@+id/linearLayoutContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints">
+        <!-- EditText fields will be dynamically added here -->
+        <EditText
+            android:id="@+id/ED1"
+            android:layout_width="210dp"
+            android:layout_height="45dp"
+            android:hint="Hint1"
+            android:background="@drawable/cutomized_edittext"
+            tools:layout_editor_absoluteX="101dp"
+            tools:layout_editor_absoluteY="218dp" />
+        <EditText
+            android:id="@+id/ED2"
+            android:layout_width="210dp"
+            android:layout_height="45dp"
+            android:hint="Hint2"
+
+            android:background="@drawable/cutomized_edittext"
+            tools:layout_editor_absoluteX="101dp"
+            tools:layout_editor_absoluteY="218dp" />
+        <EditText
+            android:id="@+id/ED3"
+            android:layout_width="210dp"
+            android:layout_height="45dp"
+            android:hint="Hint3"
+
+            android:background="@drawable/cutomized_edittext"
+            tools:layout_editor_absoluteX="101dp"
+            tools:layout_editor_absoluteY="218dp" />
+        <EditText
+            android:id="@+id/ED4"
+            android:layout_width="210dp"
+            android:layout_height="45dp"
+            android:hint="Hint4"
+
+            android:background="@drawable/cutomized_edittext"
+            tools:layout_editor_absoluteX="101dp"
+            tools:layout_editor_absoluteY="218dp" />
+        <EditText
+            android:id="@+id/ED5"
+            android:layout_width="210dp"
+            android:layout_height="45dp"
+            android:hint="Hint5"
+
+            android:background="@drawable/cutomized_edittext"
+            tools:layout_editor_absoluteX="101dp"
+            tools:layout_editor_absoluteY="218dp" />
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
