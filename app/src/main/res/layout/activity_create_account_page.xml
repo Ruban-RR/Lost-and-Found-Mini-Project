@@ -144,7 +144,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rollField"
+        app:layout_constraintTop_toBottomOf="@+id/emailField"
         app:layout_constraintVertical_bias="0.129" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -176,14 +176,14 @@
         app:layout_constraintGuide_begin="20dp" />
 
     <EditText
-        android:id="@+id/rollField"
+        android:id="@+id/emailField"
         android:layout_width="210dp"
         android:layout_height="45dp"
         android:layout_marginTop="16dp"
         android:background="@drawable/cutomized_edittext"
         android:ems="10"
-        android:hint="Roll Number"
-        android:inputType="number"
+        android:hint="Email"
+        android:inputType="text|textEmailAddress"
         android:textColor="#F4F1F1"
         android:textColorHint="#F8F0F0"
         android:textStyle="bold"

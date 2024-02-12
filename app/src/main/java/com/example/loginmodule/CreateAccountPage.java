@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,9 +21,9 @@ import com.google.firebase.database.ValueEventListener;
 import homepagemodule.HomePage;
 public class CreateAccountPage extends AppCompatActivity {
 
-    public static String num,password,confirmPassword,dept, sec,roll;
+    public static String num,password,confirmPassword,dept, sec,emailid;
     private Button backto, creatingbutton;
-    private EditText registerfield, passwordfield, repasswordfield, department, section, rollno;
+    private EditText registerfield, passwordfield, repasswordfield, department, section, email;
     private DatabaseReference db;
     private SharedPreferences cache;
 
@@ -43,7 +42,7 @@ public class CreateAccountPage extends AppCompatActivity {
         repasswordfield = findViewById(R.id.regRepass);
         department = findViewById(R.id.deptField);
         section = findViewById(R.id.secField);
-        rollno = findViewById(R.id.rollField);
+        email = findViewById(R.id.emailField);
         db = FirebaseDatabase.getInstance().getReference();
 
         backto.setOnClickListener(new View.OnClickListener() {
@@ -68,7 +67,7 @@ public class CreateAccountPage extends AppCompatActivity {
         confirmPassword = repasswordfield.getText().toString().trim();
         dept = department.getText().toString().trim();
         sec = section.getText().toString().trim();
-        roll = rollno.getText().toString().trim();
+        emailid = email.getText().toString().trim();
 
         if (num.isEmpty() || password.isEmpty()) {
             Toast.makeText(CreateAccountPage.this, "Fill the empty fields", Toast.LENGTH_SHORT).show();
@@ -90,8 +89,8 @@ public class CreateAccountPage extends AppCompatActivity {
             Toast.makeText(CreateAccountPage.this, "Enter section", Toast.LENGTH_SHORT).show();
             return;
         }
-        else if (roll.isEmpty()){
-            Toast.makeText(CreateAccountPage.this, "Enter Roll Number", Toast.LENGTH_SHORT).show();
+        else if (emailid.isEmpty()){
+            Toast.makeText(CreateAccountPage.this, "Enter Email ID", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -107,13 +106,13 @@ public class CreateAccountPage extends AppCompatActivity {
                     db.child("users").child(num).child("password").setValue(password);
                     db.child("users").child(num).child("department").setValue(dept);
                     db.child("users").child(num).child("section").setValue(sec);
-                    db.child("users").child(num).child("roll number").setValue(roll);
+                    db.child("users").child(num).child("email").setValue(emailid);
                     SharedPreferences.Editor edit = cache.edit();
                     edit.putString("cacheUserID",num);
                     edit.putString("cachePassword",password);
                     edit.putString("cacheDepartment",dept);
                     edit.putString("cacheSection",sec);
-                    edit.putString("cacheRoll",roll);
+                    edit.putString("cacheEmail",emailid);
                     edit.apply();
 
 

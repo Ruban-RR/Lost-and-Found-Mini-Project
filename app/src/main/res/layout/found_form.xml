@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Lost Thing?"
+        android:text="Found Somehing?"
         android:textColor="#FFFFFF"
         android:textSize="34sp"
         android:textStyle="bold"
@@ -21,7 +22,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
-        android:id="@+id/lostthing"
+        android:id="@+id/foundthing"
         android:layout_width="160dp"
         android:layout_height="45dp"
         android:layout_marginTop="44dp"
@@ -32,21 +33,21 @@
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
     <LinearLayout
-        android:id="@+id/linearLayoutContainer"
-        android:layout_width="wrap_content"
+        android:id="@+id/flinearLayoutContainer"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
         tools:ignore="MissingConstraints">
         <!-- EditText fields will be dynamically added here -->
         <EditText
-            android:id="@+id/Brand"
+            android:id="@+id/fBrand"
             android:layout_width="210dp"
             android:layout_height="45dp"
             android:layout_marginBottom="12dp"
@@ -58,7 +59,7 @@
             tools:layout_editor_absoluteY="218dp" />
 
         <EditText
-            android:id="@+id/Model"
+            android:id="@+id/fModel"
             android:layout_width="210dp"
             android:layout_height="45dp"
             android:layout_marginBottom="12dp"
@@ -69,7 +70,7 @@
             tools:layout_editor_absoluteY="218dp" />
 
         <EditText
-            android:id="@+id/IMEI"
+            android:id="@+id/fIMEI"
             android:layout_width="210dp"
             android:layout_height="45dp"
             android:layout_marginBottom="12dp"
@@ -80,7 +81,7 @@
             tools:layout_editor_absoluteY="218dp" />
 
         <EditText
-            android:id="@+id/Color"
+            android:id="@+id/fColor"
             android:layout_width="210dp"
             android:layout_height="45dp"
             android:layout_marginBottom="12dp"
@@ -91,7 +92,7 @@
             tools:layout_editor_absoluteY="218dp" />
 
         <EditText
-            android:id="@+id/Unique"
+            android:id="@+id/fUnique"
             android:layout_width="210dp"
             android:layout_height="45dp"
             android:layout_marginBottom="12dp"
@@ -102,7 +103,7 @@
             tools:layout_editor_absoluteY="218dp" />
 
         <EditText
-            android:id="@+id/Valuables"
+            android:id="@+id/fValuables"
             android:layout_width="210dp"
             android:layout_height="45dp"
             android:layout_marginBottom="12dp"
@@ -113,7 +114,7 @@
             tools:layout_editor_absoluteY="218dp" />
 
         <EditText
-            android:id="@+id/Date"
+            android:id="@+id/fDate"
             android:layout_width="210dp"
             android:layout_height="45dp"
             android:layout_marginBottom="12dp"
@@ -124,7 +125,7 @@
             android:textColorHint="@color/white" />
 
         <Spinner
-            android:id="@+id/TypeHeadphone"
+            android:id="@+id/fTypeHeadphone"
             android:layout_width="210dp"
             android:layout_height="45dp"
             android:layout_marginBottom="12dp"
@@ -133,7 +134,7 @@
             tools:layout_editor_absoluteY="218dp" />
 
         <Spinner
-            android:id="@+id/TypeWatch"
+            android:id="@+id/fTypeWatch"
             android:layout_width="210dp"
             android:layout_height="45dp"
             android:layout_marginBottom="12dp"
@@ -142,7 +143,7 @@
             tools:layout_editor_absoluteY="218dp" />
 
         <Spinner
-            android:id="@+id/Place"
+            android:id="@+id/fPlace"
             android:layout_width="210dp"
             android:layout_height="45dp"
             android:layout_marginBottom="12dp"
@@ -151,7 +152,7 @@
             tools:layout_editor_absoluteY="218dp" />
 
         <Button
-            android:id="@+id/ImageUpload"
+            android:id="@+id/fImageUpload"
             android:layout_width="210dp"
             android:layout_height="45dp"
             android:layout_marginBottom="12dp"
@@ -162,7 +163,7 @@
             tools:layout_editor_absoluteY="218dp" />
 
         <Button
-            android:id="@+id/Post"
+            android:id="@+id/fPost"
             android:layout_width="210dp"
             android:layout_height="45dp"
             android:layout_marginBottom="12dp"
@@ -172,7 +173,7 @@
             android:textColorHint="@color/white"
             tools:layout_editor_absoluteX="101dp"
             tools:layout_editor_absoluteY="218dp" />
-    </LinearLayout>
 
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

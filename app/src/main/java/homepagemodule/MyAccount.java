@@ -13,7 +13,7 @@ import com.example.loginmodule.CreateAccountPage;
 import com.example.loginmodule.R;
 
 public class MyAccount extends AppCompatActivity {
-    private TextView regfieldbox, departmentfieldbox, sectionfieldbox, rollnumfieldbox;
+    private TextView regfieldbox, departmentfieldbox, sectionfieldbox, emailfieldbox;
     private SharedPreferences cache;
     @SuppressLint("MissingInflatedId")
     @Override
@@ -24,12 +24,12 @@ public class MyAccount extends AppCompatActivity {
         regfieldbox = findViewById(R.id.regnumber);
         departmentfieldbox = findViewById(R.id.deptfield);
         sectionfieldbox = findViewById(R.id.sectionn);
-        rollnumfieldbox = findViewById(R.id.rn);
+        emailfieldbox = findViewById(R.id.rn);
         cache = getSharedPreferences("MyPreferences",MODE_PRIVATE);
         regfieldbox.setText(cache.getString("cacheUserID",""));
         departmentfieldbox.setText(cache.getString("cacheDepartment",""));
         sectionfieldbox.setText(cache.getString("cacheSection",""));
-        rollnumfieldbox.setText(cache.getString("cacheRoll",""));
+        emailfieldbox.setText(cache.getString("cacheEmail",""));
 
 
     }
