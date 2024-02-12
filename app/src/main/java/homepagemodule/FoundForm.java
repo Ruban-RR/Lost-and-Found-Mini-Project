@@ -1,15 +1,18 @@
 package homepagemodule;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
@@ -20,6 +23,7 @@ public class FoundForm extends AppCompatActivity {
     private LinearLayout fllc;
     private EditText fBrandName, fModelName, fImeiNumber, fColorName, fUniqueIn, fValuablesIn, fdateoflost;
     private Button fImage;
+    private ImageView fimageview;
     private static final int fPICK_IMAGE_REQUEST = 1;
     private Spinner fspinHead,fspinWatch, fspinPlace;
     @Override
@@ -42,6 +46,7 @@ public class FoundForm extends AppCompatActivity {
         fspinWatch = findViewById(R.id.fTypeWatch);
         fspinPlace = findViewById(R.id.fPlace);
         fdateoflost = findViewById(R.id.fDate);
+        fimageview = findViewById(R.id.fimageView);
 
         hideViews();
         fImage.setOnClickListener(new View.OnClickListener() {
@@ -205,6 +210,18 @@ public class FoundForm extends AppCompatActivity {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, fPICK_IMAGE_REQUEST);
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == fPICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
+            Uri imageUri = data.getData();
+            fimageview.setVisibility(View.VISIBLE);
+            fimageview.setImageURI(imageUri);
+        }
+    }
+
     private void hideViews(){
         fllc.setVisibility(View.GONE);
         fBrandName.setVisibility(View.GONE);
