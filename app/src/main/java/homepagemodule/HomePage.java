@@ -50,6 +50,13 @@ public class HomePage extends AppCompatActivity {
             }
         });
 
+        foundButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent foundB = new Intent(HomePage.this, FoundForm.class);
+                startActivity(foundB);
+            }
+        });
 
 
     }
