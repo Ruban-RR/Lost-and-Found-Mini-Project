@@ -1,9 +1,14 @@
 package homepagemodule;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,11 +22,14 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.example.loginmodule.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class LostForm extends AppCompatActivity {
-
+    private String selectedValue,selectedplace,selectedheadphone,selectedWatch;
     private LinearLayout llc;
     private EditText BrandName, ModelName, ImeiNumber, ColorName, UniqueIn, ValuablesIn, dateoflost;
     private Button Image, PostButton;
@@ -29,6 +37,8 @@ public class LostForm extends AppCompatActivity {
     private Spinner spinHead,spinWatch, spinPlace;
     private DatabaseReference lostdb;
     private ImageView imageview;
+    private SharedPreferences cachefromlogin;
+    public static String brandname, modelname, imeinum, colorname, uniquefeature, valuabledetails, datelost,watchtype,headphonetype,locationname;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,20 +62,18 @@ public class LostForm extends AppCompatActivity {
         spinPlace = findViewById(R.id.Place);
         dateoflost = findViewById(R.id.Date);
         imageview = findViewById(R.id.imageView);
-        PostButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                postToDB();
-            }
-        });
+
 
         hideViews();
+
         Image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openFileChooser();
             }
         });
+
+
         String[] Placesoflost = {"-Select Place-", "1", "2", "3"};
         ArrayAdapter<String> adapter4 = new ArrayAdapter<>(LostForm.this, android.R.layout.simple_spinner_item, Placesoflost);
         adapter4.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -73,7 +81,7 @@ public class LostForm extends AppCompatActivity {
         spinPlace.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedplace = Placesoflost[position];
+                selectedplace = Placesoflost[position];
             }
 
             @Override
@@ -88,7 +96,7 @@ public class LostForm extends AppCompatActivity {
         spinHead.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedheadphone = headphonesType[position];
+                 selectedheadphone = headphonesType[position];
             }
 
             @Override
@@ -103,7 +111,7 @@ public class LostForm extends AppCompatActivity {
         spinWatch.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedWatch = watchType[position];
+                 selectedWatch = watchType[position];
             }
 
             @Override
@@ -121,7 +129,7 @@ public class LostForm extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 // Get the selected item
-                String selectedValue = items[position];
+                selectedValue = items[position];
 
                 // Show/hide the EditText views based on the selected
                     if(selectedValue.equals("-Select Thing-")){
@@ -214,6 +222,12 @@ public class LostForm extends AppCompatActivity {
                 // Do nothing here
             }
         });
+        PostButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                postToDB();
+            }
+        });
     }
     private void openFileChooser() {
         Intent intent = new Intent();
@@ -221,23 +235,6 @@ public class LostForm extends AppCompatActivity {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
-                && data != null && data.getData() != null) {
-            Uri imageUri = data.getData();
-            imageview.setVisibility(View.VISIBLE);
-            imageview.setImageURI(imageUri);
-        }
-    }
-
-
-    private void postToDB(){
-
-    }
-
     private void hideViews(){
         llc.setVisibility(View.GONE);
         BrandName.setVisibility(View.GONE);
@@ -252,5 +249,42 @@ public class LostForm extends AppCompatActivity {
         spinPlace.setVisibility(View.GONE);
         dateoflost.setVisibility((View.GONE));
     }
+        private void postToDB(){
+            brandname = BrandName.getText().toString();
+            modelname = ModelName.getText().toString();
+            imeinum = ImeiNumber.getText().toString();
+            colorname = ColorName.getText().toString();
+            uniquefeature = UniqueIn.getText().toString();
+            valuabledetails = ValuablesIn.getText().toString();
+            datelost = dateoflost.getText().toString();
+
+
+            cachefromlogin = getSharedPreferences("MyPreferencesFromLogin",MODE_PRIVATE);
+            String registerNum = cachefromlogin.getString("useridfromlogin","");
+
+            lostdb.child("users").child(registerNum).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    lostdb.child("users").child(registerNum).child(selectedValue).child("Brand Name").setValue(brandname);
+                    lostdb.child("users").child(registerNum).child(selectedValue).child("Model Name").setValue(modelname);
+                    lostdb.child("users").child(registerNum).child(selectedValue).child("IMEI Number").setValue(imeinum);
+                    lostdb.child("users").child(registerNum).child(selectedValue).child("Color").setValue(colorname);
+                    lostdb.child("users").child(registerNum).child(selectedValue).child("Uniqueness").setValue(uniquefeature);
+                    lostdb.child("users").child(registerNum).child(selectedValue).child("ValuablesInside").setValue(valuabledetails);
+                    lostdb.child("users").child(registerNum).child(selectedValue).child("Date").setValue(datelost);
+                    lostdb.child("users").child(registerNum).child(selectedValue).child("Watch Type").setValue(selectedWatch);
+                    lostdb.child("users").child(registerNum).child(selectedValue).child("Headphone Type").setValue(selectedheadphone);
+                    lostdb.child("users").child(registerNum).child(selectedValue).child("Location").setValue(selectedplace);
+
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+
 
 }

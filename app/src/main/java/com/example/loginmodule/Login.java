@@ -42,13 +42,13 @@ public class Login extends AppCompatActivity {
         cachefromlogin = getSharedPreferences("MyPreferencesFromLogin", MODE_PRIVATE);
         logindb = FirebaseDatabase.getInstance().getReference();
 
-        back = (Button) findViewById(R.id.back2);
-        login = (Button) findViewById(R.id.loginBtn);
-        createnewbutton = (Button) findViewById(R.id.createbutton);
-        userid = (EditText) findViewById(R.id.userID);
-        password = (EditText) findViewById(R.id.pass);
-        signUp = (TextView) findViewById(R.id.signup);
-        accountCreation = (TextView) findViewById(R.id.newAcc);
+        back = findViewById(R.id.back2);
+        login = findViewById(R.id.loginBtn);
+        createnewbutton = findViewById(R.id.createbutton);
+        userid = findViewById(R.id.userID);
+        password = findViewById(R.id.pass);
+        signUp = findViewById(R.id.signup);
+        accountCreation = findViewById(R.id.newAcc);
 
 
 
@@ -69,6 +69,7 @@ public class Login extends AppCompatActivity {
                 SharedPreferences.Editor edit = cachefromlogin.edit();
                 edit.putString("useridfromlogin",numberfield);
                 edit.putString("passwordfromlogin",passwordfield);
+                edit.apply();
                 if (numberfield.isEmpty()) {
                     Toast.makeText(Login.this, "Enter Register Number!", Toast.LENGTH_SHORT).show();
                     return;

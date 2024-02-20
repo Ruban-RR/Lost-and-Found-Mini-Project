@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ShareCompat;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +17,7 @@ import com.example.loginmodule.R;
 public class HomePage extends AppCompatActivity {
     private Button logoutbtton, lostButton, foundButton;
     private ImageButton myaccBtn;
+    private SharedPreferences clearcache;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +32,10 @@ public class HomePage extends AppCompatActivity {
         logoutbtton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                clearcache = getSharedPreferences("MyPreferencesFromLogin", MODE_PRIVATE);
+                SharedPreferences.Editor editor = clearcache.edit();
+                editor.clear();
+                editor.apply();
                 Intent logback = new Intent(HomePage.this, Login.class);
                 startActivity(logback);
             }
