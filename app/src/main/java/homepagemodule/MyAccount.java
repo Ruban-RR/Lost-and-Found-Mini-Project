@@ -15,7 +15,6 @@ import com.example.loginmodule.R;
 public class MyAccount extends AppCompatActivity {
     private TextView regfieldbox, departmentfieldbox, sectionfieldbox, emailfieldbox;
     private SharedPreferences cache;
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,9 +29,5 @@ public class MyAccount extends AppCompatActivity {
         departmentfieldbox.setText(cache.getString("cacheDepartment",""));
         sectionfieldbox.setText(cache.getString("cacheSection",""));
         emailfieldbox.setText(cache.getString("cacheEmail",""));
-
-
     }
-
-
 }

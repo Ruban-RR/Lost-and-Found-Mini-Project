@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.loginmodule.R;
 import com.google.firebase.database.DataSnapshot;
@@ -32,11 +33,10 @@ public class LostForm extends AppCompatActivity {
     private String selectedValue,selectedplace,selectedheadphone,selectedWatch;
     private LinearLayout llc;
     private EditText BrandName, ModelName, ImeiNumber, ColorName, UniqueIn, ValuablesIn, dateoflost;
-    private Button Image, PostButton;
+    private Button  PostButton;
     private static final int PICK_IMAGE_REQUEST = 1;
     private Spinner spinHead,spinWatch, spinPlace;
     private DatabaseReference lostdb;
-    private ImageView imageview;
     private SharedPreferences cachefromlogin;
     public static String brandname, modelname, imeinum, colorname, uniquefeature, valuabledetails, datelost,watchtype,headphonetype,locationname;
     @Override
@@ -54,26 +54,13 @@ public class LostForm extends AppCompatActivity {
         ImeiNumber = findViewById(R.id.IMEI);
         ColorName = findViewById(R.id.Color);
         UniqueIn = findViewById(R.id.Unique);
-        Image = findViewById(R.id.ImageUpload);
         PostButton = findViewById(R.id.Post);
         ValuablesIn = findViewById(R.id.Valuables);
         spinHead = findViewById(R.id.TypeHeadphone);
         spinWatch = findViewById(R.id.TypeWatch);
         spinPlace = findViewById(R.id.Place);
         dateoflost = findViewById(R.id.Date);
-        imageview = findViewById(R.id.imageView);
-
-
         hideViews();
-
-        Image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openFileChooser();
-            }
-        });
-
-
         String[] Placesoflost = {"-Select Place-", "1", "2", "3"};
         ArrayAdapter<String> adapter4 = new ArrayAdapter<>(LostForm.this, android.R.layout.simple_spinner_item, Placesoflost);
         adapter4.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -143,7 +130,6 @@ public class LostForm extends AppCompatActivity {
                         ImeiNumber.setVisibility(View.VISIBLE);
                         ColorName.setVisibility(View.VISIBLE);
                         UniqueIn.setVisibility(View.VISIBLE);
-                        Image.setVisibility(View.VISIBLE);
                         spinPlace.setVisibility(View.VISIBLE);
                         dateoflost.setVisibility((View.VISIBLE));
                         ValuablesIn.setVisibility(View.GONE);
@@ -158,7 +144,6 @@ public class LostForm extends AppCompatActivity {
                         ImeiNumber.setVisibility(View.GONE);
                         ColorName.setVisibility(View.VISIBLE);
                         UniqueIn.setVisibility(View.VISIBLE);
-                        Image.setVisibility(View.VISIBLE);
                         ValuablesIn.setVisibility(View.VISIBLE);
                         spinPlace.setVisibility(View.VISIBLE);
                         spinHead.setVisibility(View.GONE);
@@ -173,7 +158,6 @@ public class LostForm extends AppCompatActivity {
                         ImeiNumber.setVisibility(View.GONE);
                         ColorName.setVisibility(View.VISIBLE);
                         UniqueIn.setVisibility(View.VISIBLE);
-                        Image.setVisibility(View.VISIBLE);
                         ValuablesIn.setVisibility(View.GONE);
                         spinHead.setVisibility(View.GONE);
                         spinPlace.setVisibility(View.VISIBLE);
@@ -189,7 +173,6 @@ public class LostForm extends AppCompatActivity {
                         ImeiNumber.setVisibility(View.GONE);
                         ColorName.setVisibility(View.VISIBLE);
                         UniqueIn.setVisibility(View.VISIBLE);
-                        Image.setVisibility(View.VISIBLE);
                         ValuablesIn.setVisibility(View.VISIBLE);
                         spinHead.setVisibility(View.GONE);
                         spinPlace.setVisibility(View.VISIBLE);
@@ -205,7 +188,6 @@ public class LostForm extends AppCompatActivity {
                         ImeiNumber.setVisibility(View.GONE);
                         ColorName.setVisibility(View.VISIBLE);
                         UniqueIn.setVisibility(View.VISIBLE);
-                        Image.setVisibility(View.VISIBLE);
                         spinPlace.setVisibility(View.VISIBLE);
                         ValuablesIn.setVisibility(View.GONE);
                         spinHead.setVisibility(View.VISIBLE);
@@ -242,7 +224,6 @@ public class LostForm extends AppCompatActivity {
         ImeiNumber.setVisibility(View.GONE);
         ColorName.setVisibility(View.GONE);
         UniqueIn.setVisibility(View.GONE);
-        Image.setVisibility(View.GONE);
         ValuablesIn.setVisibility(View.GONE);
         spinHead.setVisibility(View.GONE);
         spinWatch.setVisibility(View.GONE);
@@ -265,17 +246,16 @@ public class LostForm extends AppCompatActivity {
             lostdb.child("users").child(registerNum).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    lostdb.child("users").child(registerNum).child(selectedValue).child("Brand Name").setValue(brandname);
-                    lostdb.child("users").child(registerNum).child(selectedValue).child("Model Name").setValue(modelname);
-                    lostdb.child("users").child(registerNum).child(selectedValue).child("IMEI Number").setValue(imeinum);
-                    lostdb.child("users").child(registerNum).child(selectedValue).child("Color").setValue(colorname);
-                    lostdb.child("users").child(registerNum).child(selectedValue).child("Uniqueness").setValue(uniquefeature);
-                    lostdb.child("users").child(registerNum).child(selectedValue).child("ValuablesInside").setValue(valuabledetails);
-                    lostdb.child("users").child(registerNum).child(selectedValue).child("Date").setValue(datelost);
-                    lostdb.child("users").child(registerNum).child(selectedValue).child("Watch Type").setValue(selectedWatch);
-                    lostdb.child("users").child(registerNum).child(selectedValue).child("Headphone Type").setValue(selectedheadphone);
-                    lostdb.child("users").child(registerNum).child(selectedValue).child("Location").setValue(selectedplace);
-
+                    lostdb.child("users").child(registerNum).child("lost").child(selectedValue).child("Brand Name").setValue(brandname);
+                    lostdb.child("users").child(registerNum).child("lost").child(selectedValue).child("Model Name").setValue(modelname);
+                    lostdb.child("users").child(registerNum).child("lost").child(selectedValue).child("IMEI Number").setValue(imeinum);
+                    lostdb.child("users").child(registerNum).child("lost").child(selectedValue).child("Color").setValue(colorname);
+                    lostdb.child("users").child(registerNum).child("lost").child(selectedValue).child("Uniqueness").setValue(uniquefeature);
+                    lostdb.child("users").child(registerNum).child("lost").child(selectedValue).child("ValuablesInside").setValue(valuabledetails);
+                    lostdb.child("users").child(registerNum).child("lost").child(selectedValue).child("Date").setValue(datelost);
+                    lostdb.child("users").child(registerNum).child("lost").child(selectedValue).child("Watch Type").setValue(selectedWatch);
+                    lostdb.child("users").child(registerNum).child("lost").child(selectedValue).child("Headphone Type").setValue(selectedheadphone);
+                    lostdb.child("users").child(registerNum).child("lost").child(selectedValue).child("Location").setValue(selectedplace);
 
                 }
 
@@ -284,6 +264,7 @@ public class LostForm extends AppCompatActivity {
 
                 }
             });
+            Toast.makeText(LostForm.this,"Posted Successfully :)",Toast.LENGTH_SHORT).show();
         }
 
 

@@ -151,22 +151,6 @@
             tools:layout_editor_absoluteY="218dp" />
 
         <Button
-            android:id="@+id/ImageUpload"
-            android:layout_width="210dp"
-            android:layout_height="45dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/cutomized_edittext"
-            android:hint="Upload Image"
-            android:textColorHint="@color/white"
-            tools:layout_editor_absoluteX="101dp"
-            tools:layout_editor_absoluteY="218dp" />
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="45dp"
-            />
-
-        <Button
             android:id="@+id/Post"
             android:layout_width="210dp"
             android:layout_height="45dp"
