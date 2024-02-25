@@ -29,12 +29,12 @@ import com.google.firebase.database.ValueEventListener;
 public class FoundForm extends AppCompatActivity {
 
     private LinearLayout fllc;
-    private String fselectedValue, fselectedheadphone, fselectedWatch, fselectedplace;
-    private EditText fBrandName, fModelName, fImeiNumber, fColorName, fUniqueIn, fValuablesIn, fdateoflost;
-    private Button fImage,postbtn;
+    private String fselectedValue, fselectedheadphone, fselectedWatch, fselectedplace, fselectedBag;
+    private EditText fbrandNameEditText, fmodelNameEditText, fimeiEditText, fcolorEditText, funiqueEditText, fdateOfLostEditText;
+    private Button fImage,fPostphone, fPostwatch, fPostbag, fPostpurse, fPosthead;
     private ImageView fimageview;
     private static final int fPICK_IMAGE_REQUEST = 1;
-    private Spinner fspinHead,fspinWatch, fspinPlace;
+    private Spinner fspinHead,fspinWatch, fspinPlace, ftypeOfBag;
     private SharedPreferences fcachefromlogin;
     private DatabaseReference founddb;
     public static String fbrandname, fmodelname, fimeinum, fcolorname, funiquefeature, fvaluabledetails, fdatelost;
@@ -49,25 +49,42 @@ public class FoundForm extends AppCompatActivity {
         founddb = FirebaseDatabase.getInstance().getReference();
         // Initialize layout elements after setting the content view
         fllc = findViewById(R.id.flinearLayoutContainer);
-        fBrandName = findViewById(R.id.fBrand);
-        fModelName = findViewById(R.id.fModel);
-        fImeiNumber = findViewById(R.id.fIMEI);
-        fColorName = findViewById(R.id.fColor);
-        fUniqueIn = findViewById(R.id.fUnique);
-        fValuablesIn = findViewById(R.id.fValuables);
+        fbrandNameEditText = findViewById(R.id.fBrand);
+        fmodelNameEditText = findViewById(R.id.fModel);
+        fimeiEditText = findViewById(R.id.fIMEI);
+        fcolorEditText = findViewById(R.id.fColor);
+        funiqueEditText = findViewById(R.id.fUnique);
         fspinHead = findViewById(R.id.fTypeHeadphone);
         fspinWatch = findViewById(R.id.fTypeWatch);
         fspinPlace = findViewById(R.id.fPlace);
-        fdateoflost = findViewById(R.id.fDate);
-        postbtn = findViewById(R.id.fPost);
+        fdateOfLostEditText = findViewById(R.id.fDate);
         fImage = findViewById(R.id.fImageUpload);
         fimageview = findViewById(R.id.fimageView);
-
-        hideViews();
+        ftypeOfBag = findViewById(R.id.fBagType);
+        fPostphone = findViewById(R.id.fPostPhone);
+        fPostwatch = findViewById(R.id.fPostWatch);
+        fPostbag = findViewById(R.id.fPostBag);
+        fPostpurse = findViewById(R.id.fPostPurse);
+        fPosthead = findViewById(R.id.fPostHead);
         fImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openFileChooser();
+            }
+        });
+        String[] fTypesOfBags = {"-Type of Bag-","Shoulder Bag", "Hand Bag"};
+        ArrayAdapter<String> adapter6 = new ArrayAdapter<>(FoundForm.this, android.R.layout.simple_spinner_item, fTypesOfBags);
+        adapter6.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ftypeOfBag.setAdapter(adapter6);
+        ftypeOfBag.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                fselectedBag = fTypesOfBags[position];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
         String[] Placesoflost = {"-Select Place-", "1", "2", "3"};
@@ -130,89 +147,73 @@ public class FoundForm extends AppCompatActivity {
                 fselectedValue = items[position];
 
                 // Show/hide the EditText views based on the selected
-                if(fselectedValue.equals("-Select Thing-")){
-                    hideViews();
-
-                }
-                else if (fselectedValue.equals("Mobile")) {
-                    fllc.setVisibility(View.VISIBLE);
-                    fBrandName.setVisibility(View.VISIBLE);
-                    fModelName.setVisibility(View.VISIBLE);
-                    fImeiNumber.setVisibility(View.VISIBLE);
-                    fColorName.setVisibility(View.VISIBLE);
-                    fUniqueIn.setVisibility(View.VISIBLE);
-                    fImage.setVisibility(View.VISIBLE);
-                    fspinPlace.setVisibility(View.VISIBLE);
-                    fdateoflost.setVisibility((View.VISIBLE));
-                    fValuablesIn.setVisibility(View.GONE);
-                    fspinHead.setVisibility(View.GONE);
-                    fspinWatch.setVisibility(View.GONE);
-
-
-                } else if (fselectedValue.equals("Bag")) {
-                    fllc.setVisibility(View.VISIBLE);
-                    fBrandName.setVisibility(View.VISIBLE);
-                    fModelName.setVisibility(View.VISIBLE);
-                    fImeiNumber.setVisibility(View.GONE);
-                    fColorName.setVisibility(View.VISIBLE);
-                    fUniqueIn.setVisibility(View.VISIBLE);
-                    fImage.setVisibility(View.VISIBLE);
-                    fValuablesIn.setVisibility(View.VISIBLE);
-                    fspinPlace.setVisibility(View.VISIBLE);
-                    fspinHead.setVisibility(View.GONE);
-                    fdateoflost.setVisibility((View.VISIBLE));
-                    fspinWatch.setVisibility(View.GONE);
-
-                }
-                else if (fselectedValue.equals("Watch")) {
-                    fllc.setVisibility(View.VISIBLE);
-                    fBrandName.setVisibility(View.VISIBLE);
-                    fModelName.setVisibility(View.VISIBLE);
-                    fImeiNumber.setVisibility(View.GONE);
-                    fColorName.setVisibility(View.VISIBLE);
-                    fUniqueIn.setVisibility(View.VISIBLE);
-                    fImage.setVisibility(View.VISIBLE);
-                    fValuablesIn.setVisibility(View.GONE);
-                    fspinHead.setVisibility(View.GONE);
-                    fspinPlace.setVisibility(View.VISIBLE);
-                    fspinWatch.setVisibility(View.VISIBLE);
-                    fdateoflost.setVisibility((View.VISIBLE));
-
-
-                }
-                else if (fselectedValue.equals("Purse")) {
-                    fllc.setVisibility(View.VISIBLE);
-                    fBrandName.setVisibility(View.VISIBLE);
-                    fModelName.setVisibility(View.GONE);
-                    fImeiNumber.setVisibility(View.GONE);
-                    fColorName.setVisibility(View.VISIBLE);
-                    fUniqueIn.setVisibility(View.VISIBLE);
-                    fImage.setVisibility(View.VISIBLE);
-                    fValuablesIn.setVisibility(View.VISIBLE);
-                    fspinHead.setVisibility(View.GONE);
-                    fspinPlace.setVisibility(View.VISIBLE);
-                    fspinWatch.setVisibility(View.GONE);
-                    fdateoflost.setVisibility((View.VISIBLE));
-
-
-                }
-                else if (fselectedValue.equals("Headphones")) {
-                    fllc.setVisibility(View.VISIBLE);
-                    fBrandName.setVisibility(View.VISIBLE);
-                    fModelName.setVisibility(View.VISIBLE);
-                    fImeiNumber.setVisibility(View.GONE);
-                    fColorName.setVisibility(View.VISIBLE);
-                    fUniqueIn.setVisibility(View.VISIBLE);
-                    fImage.setVisibility(View.VISIBLE);
-                    fspinPlace.setVisibility(View.VISIBLE);
-                    fValuablesIn.setVisibility(View.GONE);
-                    fspinHead.setVisibility(View.VISIBLE);
-                    fspinWatch.setVisibility(View.GONE);
-                    fdateoflost.setVisibility((View.VISIBLE));
-
-                }else {
-                    // For other items, hide all EditText views
-                    fllc.setVisibility(View.GONE);
+                fllc.setVisibility(View.VISIBLE);
+                fbrandNameEditText.setVisibility(View.VISIBLE);
+                fmodelNameEditText.setVisibility(View.VISIBLE);
+                fimeiEditText.setVisibility(View.VISIBLE);
+                fcolorEditText.setVisibility(View.VISIBLE);
+                funiqueEditText.setVisibility(View.VISIBLE);
+                fdateOfLostEditText.setVisibility(View.VISIBLE);
+                fspinWatch.setVisibility(View.VISIBLE);
+                fspinPlace.setVisibility(View.VISIBLE);
+                fspinHead.setVisibility(View.VISIBLE);
+                ftypeOfBag.setVisibility(View.VISIBLE);
+                fPostphone.setVisibility(View.VISIBLE);
+                fPostwatch.setVisibility(View.VISIBLE);
+                fPostbag.setVisibility(View.VISIBLE);
+                fPostpurse.setVisibility(View.VISIBLE);
+                fPosthead.setVisibility(View.VISIBLE);
+                // Update visibility based on selected item
+                switch (fselectedValue) {
+                    case "Mobile":
+                        fspinWatch.setVisibility(View.GONE);
+                        fspinHead.setVisibility(View.GONE);
+                        ftypeOfBag.setVisibility(View.GONE);
+                        fPostwatch.setVisibility(View.GONE);
+                        fPostbag.setVisibility(View.GONE);
+                        fPostpurse.setVisibility(View.GONE);
+                        fPosthead.setVisibility(View.GONE);
+                        break;
+                    case "Bag":
+                        fimeiEditText.setVisibility(View.GONE);
+                        fspinWatch.setVisibility(View.GONE);
+                        fspinHead.setVisibility(View.GONE);
+                        fPostwatch.setVisibility(View.GONE);
+                        fPostphone.setVisibility(View.GONE);
+                        fPostpurse.setVisibility(View.GONE);
+                        fPosthead.setVisibility(View.GONE);
+                        break;
+                    case "Watch":
+                        ftypeOfBag.setVisibility(View.GONE);
+                        fimeiEditText.setVisibility(View.GONE);
+                        fspinHead.setVisibility(View.GONE);
+                        fPostphone.setVisibility(View.GONE);
+                        fPostbag.setVisibility(View.GONE);
+                        fPostpurse.setVisibility(View.GONE);
+                        fPosthead.setVisibility(View.GONE);
+                        break;
+                    case "Purse":
+                        ftypeOfBag.setVisibility(View.GONE);
+                        fmodelNameEditText.setVisibility(View.GONE);
+                        fimeiEditText.setVisibility(View.GONE);
+                        fspinWatch.setVisibility(View.GONE);
+                        fspinHead.setVisibility(View.GONE);
+                        fPostwatch.setVisibility(View.GONE);
+                        fPostbag.setVisibility(View.GONE);
+                        fPostphone.setVisibility(View.GONE);
+                        fPosthead.setVisibility(View.GONE);
+                        break;
+                    case "Headphones":
+                        ftypeOfBag.setVisibility(View.GONE);
+                        fimeiEditText.setVisibility(View.GONE);
+                        fspinWatch.setVisibility(View.GONE);
+                        fPostwatch.setVisibility(View.GONE);
+                        fPostbag.setVisibility(View.GONE);
+                        fPostpurse.setVisibility(View.GONE);
+                        fPostphone.setVisibility(View.GONE);
+                        break;
+                    default:
+                        fllc.setVisibility(View.GONE);
                 }
             }
             @Override
@@ -220,11 +221,29 @@ public class FoundForm extends AppCompatActivity {
                 // Do nothing here
             }
         });
-        postbtn.setOnClickListener(new View.OnClickListener() {
+        fcachefromlogin = getSharedPreferences("MyPreferencesFromLogin",MODE_PRIVATE);
+        String fregisterNumber = fcachefromlogin.getString("useridfromlogin","");
+        fPostphone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fpostToDB();
+                fpostToDBphone(fregisterNumber);
             }
+        });
+        fPostwatch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) { fpostToDBwatch(fregisterNumber); }
+        });
+        fPostbag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) { fpostToDBbag(fregisterNumber); }
+        });
+        fPostpurse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){ fpostToDBpurse(fregisterNumber); }
+        });
+        fPosthead.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) { fpostToDBhead(fregisterNumber);}
         });
     }
     private void openFileChooser() {
@@ -246,55 +265,125 @@ public class FoundForm extends AppCompatActivity {
         }
     }
 
-    private void hideViews(){
-        fllc.setVisibility(View.GONE);
-        fBrandName.setVisibility(View.GONE);
-        fModelName.setVisibility(View.GONE);
-        fImeiNumber.setVisibility(View.GONE);
-        fColorName.setVisibility(View.GONE);
-        fUniqueIn.setVisibility(View.GONE);
-        fImage.setVisibility(View.GONE);
-        fValuablesIn.setVisibility(View.GONE);
-        fspinHead.setVisibility(View.GONE);
-        fspinWatch.setVisibility(View.GONE);
-        fspinPlace.setVisibility(View.GONE);
-        fdateoflost.setVisibility((View.GONE));
-    }
-    private void fpostToDB(){
-        fbrandname = fBrandName.getText().toString();
-        fmodelname = fModelName.getText().toString();
-        fimeinum = fImeiNumber.getText().toString();
-        fcolorname = fColorName.getText().toString();
-        funiquefeature = fUniqueIn.getText().toString();
-        fvaluabledetails = fValuablesIn.getText().toString();
-        fdatelost = fdateoflost.getText().toString();
-
-        fcachefromlogin = getSharedPreferences("MyPreferencesFromLogin",MODE_PRIVATE);
-        String fregisterNumber = fcachefromlogin.getString("useridfromlogin","");
+    private void fpostToDBphone(String fregisterNumber){
+        fbrandname = fbrandNameEditText.getText().toString();
+        fmodelname = fmodelNameEditText.getText().toString();
+        fimeinum = fimeiEditText.getText().toString();
+        fcolorname = fcolorEditText.getText().toString();
+        funiquefeature = funiqueEditText.getText().toString();
+        fdatelost = fdateOfLostEditText.getText().toString();
         founddb.child("users").child(fregisterNumber).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                founddb.child("users").child(fregisterNumber).child("found").child(fselectedValue).child("Brand Name").setValue(fbrandname);
-                founddb.child("users").child(fregisterNumber).child("found").child(fselectedValue).child("Model Name").setValue(fmodelname);
-                founddb.child("users").child(fregisterNumber).child("found").child(fselectedValue).child("IMEI Number").setValue(fimeinum);
-                founddb.child("users").child(fregisterNumber).child("found").child(fselectedValue).child("Color").setValue(fcolorname);
-                founddb.child("users").child(fregisterNumber).child("found").child(fselectedValue).child("Uniqueness").setValue(funiquefeature);
-                founddb.child("users").child(fregisterNumber).child("found").child(fselectedValue).child("ValuablesInside").setValue(fvaluabledetails);
-                founddb.child("users").child(fregisterNumber).child("found").child(fselectedValue).child("Date").setValue(fdatelost);
-                founddb.child("users").child(fregisterNumber).child("found").child(fselectedValue).child("Watch Type").setValue(fselectedWatch);
-                founddb.child("users").child(fregisterNumber).child("found").child(fselectedValue).child("Headphone Type").setValue(fselectedheadphone);
-                founddb.child("users").child(fregisterNumber).child("found").child(fselectedValue).child("Location").setValue(fselectedplace);
-
+                DatabaseReference fref = founddb.child("users").child(fregisterNumber).child("found").child(fselectedValue);
+                fref.child("Brand Name").setValue(fbrandname);
+                fref.child("Model Name").setValue(fmodelname);
+                fref.child("IMEI Number").setValue(fimeinum);
+                fref.child("Color").setValue(fcolorname);
+                fref.child("Uniqueness").setValue(funiquefeature);
+                fref.child("Date").setValue(fdatelost);
+                fref.child("Location").setValue(fselectedplace);
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
 
-        Toast.makeText(FoundForm.this,"Posted Successfully :)",Toast.LENGTH_SHORT).show();
+        fintcall();
+    }
+    private void fpostToDBwatch(String registerNum){
+        fbrandname = fbrandNameEditText.getText().toString();
+        fmodelname = fmodelNameEditText.getText().toString();
+        fcolorname = fcolorEditText.getText().toString();
+        funiquefeature = funiqueEditText.getText().toString();
+        fdatelost = fdateOfLostEditText.getText().toString();
+        founddb.child("users").child(registerNum).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                DatabaseReference ref = founddb.child("users").child(registerNum).child("lost").child(fselectedValue);
+                ref.child("Brand Name").setValue(fbrandname);
+                ref.child("Model Name").setValue(fmodelname);
+                ref.child("Color").setValue(fcolorname);
+                ref.child("Uniqueness").setValue(funiquefeature);
+                ref.child("Date").setValue(fdatelost);
+                ref.child("Watch Type").setValue(fselectedWatch);
+                ref.child("Location").setValue(fselectedplace);
+            }
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+        fintcall();
+    }
+    private void fpostToDBbag(String registerNum){
+        fbrandname = fbrandNameEditText.getText().toString();
+        fmodelname = fmodelNameEditText.getText().toString();
+        fcolorname = fcolorEditText.getText().toString();
+        funiquefeature = funiqueEditText.getText().toString();
+        fdatelost = fdateOfLostEditText.getText().toString();
+        founddb.child("users").child(registerNum).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                DatabaseReference ref = founddb.child("users").child(registerNum).child("lost").child(fselectedValue);
+                ref.child("Brand Name").setValue(fbrandname);
+                ref.child("Model Name").setValue(fmodelname);
+                ref.child("Color").setValue(fcolorname);
+                ref.child("Uniqueness").setValue(funiquefeature);
+                ref.child("Date").setValue(fdatelost);
+                ref.child("Bag Type").setValue(fselectedBag);
+                ref.child("Location").setValue(fselectedplace);
+            }
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+        fintcall();
+    }
 
+    private void fpostToDBpurse(String registerNum){
+        fbrandname = fbrandNameEditText.getText().toString();
+        fcolorname = fcolorEditText.getText().toString();
+        funiquefeature = funiqueEditText.getText().toString();
+        fdatelost = fdateOfLostEditText.getText().toString();
+        founddb.child("users").child(registerNum).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                DatabaseReference ref = founddb.child("users").child(registerNum).child("lost").child(fselectedValue);
+                ref.child("Brand Name").setValue(fbrandname);
+                ref.child("Color").setValue(fcolorname);
+                ref.child("Uniqueness").setValue(funiquefeature);
+                ref.child("Date").setValue(fdatelost);
+                ref.child("Location").setValue(fselectedplace);
+            }
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+        fintcall();
+    }
+    private void fpostToDBhead(String registerNum){
+        fbrandname = fbrandNameEditText.getText().toString();
+        fmodelname = fmodelNameEditText.getText().toString();
+        fcolorname = fcolorEditText.getText().toString();
+        funiquefeature = funiqueEditText.getText().toString();
+        fdatelost = fdateOfLostEditText.getText().toString();
+        founddb.child("users").child(registerNum).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                DatabaseReference ref = founddb.child("users").child(registerNum).child("lost").child(fselectedValue);
+                ref.child("Brand Name").setValue(fbrandname);
+                ref.child("Model Name").setValue(fmodelname);
+                ref.child("Color").setValue(fcolorname);
+                ref.child("Uniqueness").setValue(funiquefeature);
+                ref.child("Date").setValue(fdatelost);
+                ref.child("Headphone Type").setValue(fselectedheadphone);
+                ref.child("Location").setValue(fselectedplace);
+            }
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+        fintcall();
+    }
+    private void fintcall(){
+        Intent tosuccesspost = new Intent(FoundForm.this, SuccessfulPost.class);
+        startActivity(tosuccesspost);
     }
 
 }

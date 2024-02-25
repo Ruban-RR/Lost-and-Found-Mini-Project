@@ -1,23 +1,17 @@
 package homepagemodule;
 
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -30,12 +24,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class LostForm extends AppCompatActivity {
-    private String selectedValue,selectedplace,selectedheadphone,selectedWatch, selectedValuable;
-    private LinearLayout llc,llc2;
-    private EditText BrandName, ModelName, ImeiNumber, ColorName, UniqueIn, dateoflost, AadharName,AadharNumber,CardName,LicenseName, PANname,DOBinPAN,OtherThing, DOBinLicense;
-    private Button  PostButton;
-    private static final int PICK_IMAGE_REQUEST = 1;
-    private Spinner spinHead,spinWatch, spinPlace, ValuablesIn, BankName;
+    private String selectedValue,selectedplace,selectedheadphone,selectedWatch, selectedBag;
+    private LinearLayout llc;
+    private EditText brandNameEditText, modelNameEditText, imeiEditText, colorEditText, uniqueEditText, dateOfLostEditText;
+    private Button  Postphone, Postwatch, Postbag, Postpurse, Posthead ;
+    private Spinner spinHead, spinWatch, spinPlace, typeOfBag;
     private DatabaseReference lostdb;
     private SharedPreferences cachefromlogin;
     public static String brandname, modelname, imeinum, colorname, uniquefeature, datelost;
@@ -49,30 +42,38 @@ public class LostForm extends AppCompatActivity {
 
         // Initialize layout elements after setting the content view
         llc = findViewById(R.id.linearLayoutContainer);
-        llc2= findViewById(R.id.linearLayoutContainer2);
-        BrandName = findViewById(R.id.Brand);
-        ModelName = findViewById(R.id.Model);
-        ImeiNumber = findViewById(R.id.IMEI);
-        ColorName = findViewById(R.id.Color);
-        UniqueIn = findViewById(R.id.Unique);
-        PostButton = findViewById(R.id.Post);
-        ValuablesIn = findViewById(R.id.Valuables);
+        brandNameEditText = findViewById(R.id.Brand);
+        modelNameEditText = findViewById(R.id.Model);
+        imeiEditText = findViewById(R.id.IMEI);
+        colorEditText = findViewById(R.id.Color);
+        uniqueEditText = findViewById(R.id.Unique);
+        Postphone = findViewById(R.id.PostPhone);
         spinHead = findViewById(R.id.TypeHeadphone);
         spinWatch = findViewById(R.id.TypeWatch);
         spinPlace = findViewById(R.id.Place);
-        dateoflost = findViewById(R.id.Date);
-        AadharName = findViewById(R.id.aadharname);
-        AadharNumber = findViewById(R.id.aadharnumber);
-        BankName = findViewById(R.id.bankname);
-        CardName = findViewById(R.id.nameincard);
-        LicenseName = findViewById(R.id.licensename);
-        PANname = findViewById(R.id.nameinpan);
-        DOBinPAN = findViewById(R.id.dobinpan);
-        OtherThing= findViewById(R.id.otherthing);
-        DOBinLicense = findViewById(R.id.licencedob);
-        hideViews();
-        hideViews2();
-        String[] Placesoflost = {"-Select Place-", "1", "2", "3"};
+        dateOfLostEditText = findViewById(R.id.Date);
+        typeOfBag = findViewById(R.id.BagType);
+        Postwatch = findViewById(R.id.PostWatch);
+        Postbag = findViewById(R.id.PostBag);
+        Postpurse = findViewById(R.id.PostPurse);
+        Posthead = findViewById(R.id.PostHead);
+
+        String[] TypesOfBags = {"-Type of Bag-","Shoulder Bag", "Hand Bag"};
+        ArrayAdapter<String> adapter6 = new ArrayAdapter<>(LostForm.this, android.R.layout.simple_spinner_item, TypesOfBags);
+        adapter6.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        typeOfBag.setAdapter(adapter6);
+        typeOfBag.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedBag = TypesOfBags[position];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        String[] Placesoflost = {"-Place of lost-", "1", "2", "3"};
         ArrayAdapter<String> adapter4 = new ArrayAdapter<>(LostForm.this, android.R.layout.simple_spinner_item, Placesoflost);
         adapter4.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinPlace.setAdapter(adapter4);
@@ -87,76 +88,7 @@ public class LostForm extends AppCompatActivity {
 
             }
         });
-        String[] ValuablesInside = {"-Valuables Inside-", "Aadhar", "Bank Card", "Driving License","PAN Card","Others"};
-        ArrayAdapter<String> adapterValuable = new ArrayAdapter<>(LostForm.this, android.R.layout.simple_spinner_item, ValuablesInside);
-        adapterValuable.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        ValuablesIn.setAdapter(adapterValuable);
-        ValuablesIn.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedValuable = ValuablesInside[position];
-                if (selectedValuable.equals("-Valuables Inside-")){
-                    hideViews2();
-                } else if (selectedValue.equals("Aadhar")) {
-                    AadharName.setVisibility(View.VISIBLE);
-                    AadharNumber.setVisibility(View.VISIBLE);
-                    BankName.setVisibility(View.GONE);
-                    CardName.setVisibility(View.GONE);
-                    LicenseName.setVisibility(View.GONE);
-                    DOBinPAN.setVisibility(View.GONE);
-                    PANname.setVisibility(View.GONE);
-                    DOBinLicense.setVisibility(View.GONE);
-                    OtherThing.setVisibility(View.GONE);
-                } else if (selectedValue.equals("Bank Card")) {
-                    AadharName.setVisibility(View.GONE);
-                    AadharNumber.setVisibility(View.GONE);
-                    BankName.setVisibility(View.VISIBLE);
-                    CardName.setVisibility(View.VISIBLE);
-                    LicenseName.setVisibility(View.GONE);
-                    DOBinPAN.setVisibility(View.GONE);
-                    PANname.setVisibility(View.GONE);
-                    DOBinLicense.setVisibility(View.GONE);
-                    OtherThing.setVisibility(View.GONE);
-                } else if (selectedValue.equals("Driving License")) {
-                    AadharName.setVisibility(View.GONE);
-                    AadharNumber.setVisibility(View.GONE);
-                    BankName.setVisibility(View.GONE);
-                    CardName.setVisibility(View.GONE);
-                    LicenseName.setVisibility(View.VISIBLE);
-                    DOBinPAN.setVisibility(View.GONE);
-                    PANname.setVisibility(View.GONE);
-                    DOBinLicense.setVisibility(View.VISIBLE);
-                    OtherThing.setVisibility(View.GONE);
-                } else if (selectedValue.equals("PAN Card")) {
-                    AadharName.setVisibility(View.GONE);
-                    AadharNumber.setVisibility(View.GONE);
-                    BankName.setVisibility(View.GONE);
-                    CardName.setVisibility(View.GONE);
-                    LicenseName.setVisibility(View.GONE);
-                    DOBinPAN.setVisibility(View.VISIBLE);
-                    PANname.setVisibility(View.VISIBLE);
-                    DOBinLicense.setVisibility(View.GONE);
-                    OtherThing.setVisibility(View.GONE);
-                } else if (selectedValue.equals("Others")) {
-                    AadharName.setVisibility(View.GONE);
-                    AadharNumber.setVisibility(View.GONE);
-                    BankName.setVisibility(View.GONE);
-                    CardName.setVisibility(View.GONE);
-                    LicenseName.setVisibility(View.GONE);
-                    DOBinLicense.setVisibility(View.GONE);
-                    DOBinPAN.setVisibility(View.GONE);
-                    PANname.setVisibility(View.GONE);
-                    OtherThing.setVisibility(View.VISIBLE);
-                }else {
-                    llc2.setVisibility(View.GONE);
-                }
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
         String[] headphonesType = {"-Select Type-", "Wired", "Neckband", "Earpod"};
         ArrayAdapter<String> adapter2 = new ArrayAdapter<>(LostForm.this, android.R.layout.simple_spinner_item, headphonesType);
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -166,10 +98,8 @@ public class LostForm extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                  selectedheadphone = headphonesType[position];
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
         String[] watchType = {"-Select Type-", "Analog", "Digital", "Smart"};
@@ -181,16 +111,13 @@ public class LostForm extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                  selectedWatch = watchType[position];
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
         String[] items = {"-Select Thing-","Mobile", "Watch", "Bag", "Purse", "Headphones"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(LostForm.this, android.R.layout.simple_spinner_item, items);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
         Spinner spin = findViewById(R.id.lostthing);
         spin.setAdapter(adapter);
         spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -198,159 +125,223 @@ public class LostForm extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 // Get the selected item
                 selectedValue = items[position];
+                llc.setVisibility(View.VISIBLE);
+                brandNameEditText.setVisibility(View.VISIBLE);
+                modelNameEditText.setVisibility(View.VISIBLE);
+                imeiEditText.setVisibility(View.VISIBLE);
+                colorEditText.setVisibility(View.VISIBLE);
+                uniqueEditText.setVisibility(View.VISIBLE);
+                dateOfLostEditText.setVisibility(View.VISIBLE);
+                spinWatch.setVisibility(View.VISIBLE);
+                spinPlace.setVisibility(View.VISIBLE);
+                spinHead.setVisibility(View.VISIBLE);
+                typeOfBag.setVisibility(View.VISIBLE);
+                Postphone.setVisibility(View.VISIBLE);
+                Postwatch.setVisibility(View.VISIBLE);
+                Postbag.setVisibility(View.VISIBLE);
+                Postpurse.setVisibility(View.VISIBLE);
+                Posthead.setVisibility(View.VISIBLE);
 
-                // Show/hide the EditText views based on the selected
-                    if(selectedValue.equals("-Select Thing-")){
-                        hideViews();
-
-                    }
-                    else if (selectedValue.equals("Mobile")) {
-                        llc.setVisibility(View.VISIBLE);
-                        BrandName.setVisibility(View.VISIBLE);
-                        ModelName.setVisibility(View.VISIBLE);
-                        ImeiNumber.setVisibility(View.VISIBLE);
-                        ColorName.setVisibility(View.VISIBLE);
-                        UniqueIn.setVisibility(View.VISIBLE);
-                        spinPlace.setVisibility(View.VISIBLE);
-                        dateoflost.setVisibility((View.VISIBLE));
-                        ValuablesIn.setVisibility(View.GONE);
-                        spinHead.setVisibility(View.GONE);
+                // Update visibility based on selected item
+                switch (selectedValue) {
+                    case "Mobile":
                         spinWatch.setVisibility(View.GONE);
-                    } else if (selectedValue.equals("Bag")) {
-                        llc.setVisibility(View.VISIBLE);
-                        BrandName.setVisibility(View.VISIBLE);
-                        ModelName.setVisibility(View.VISIBLE);
-                        ImeiNumber.setVisibility(View.GONE);
-                        ColorName.setVisibility(View.VISIBLE);
-                        UniqueIn.setVisibility(View.VISIBLE);
-                        ValuablesIn.setVisibility(View.VISIBLE);
-                        spinPlace.setVisibility(View.VISIBLE);
                         spinHead.setVisibility(View.GONE);
-                        dateoflost.setVisibility((View.VISIBLE));
+                        typeOfBag.setVisibility(View.GONE);
+                        Postwatch.setVisibility(View.GONE);
+                        Postbag.setVisibility(View.GONE);
+                        Postpurse.setVisibility(View.GONE);
+                        Posthead.setVisibility(View.GONE);
+                        break;
+                    case "Bag":
+                        imeiEditText.setVisibility(View.GONE);
                         spinWatch.setVisibility(View.GONE);
-                    }
-                    else if (selectedValue.equals("Watch")) {
-                        llc.setVisibility(View.VISIBLE);
-                        BrandName.setVisibility(View.VISIBLE);
-                        ModelName.setVisibility(View.VISIBLE);
-                        ImeiNumber.setVisibility(View.GONE);
-                        ColorName.setVisibility(View.VISIBLE);
-                        UniqueIn.setVisibility(View.VISIBLE);
-                        ValuablesIn.setVisibility(View.GONE);
                         spinHead.setVisibility(View.GONE);
-                        spinPlace.setVisibility(View.VISIBLE);
-                        spinWatch.setVisibility(View.VISIBLE);
-                        dateoflost.setVisibility((View.VISIBLE));
-                    }
-                    else if (selectedValue.equals("Purse")) {
-                        llc.setVisibility(View.VISIBLE);
-                        BrandName.setVisibility(View.VISIBLE);
-                        ModelName.setVisibility(View.GONE);
-                        ImeiNumber.setVisibility(View.GONE);
-                        ColorName.setVisibility(View.VISIBLE);
-                        UniqueIn.setVisibility(View.VISIBLE);
-                        ValuablesIn.setVisibility(View.VISIBLE);
+                        Postwatch.setVisibility(View.GONE);
+                        Postphone.setVisibility(View.GONE);
+                        Postpurse.setVisibility(View.GONE);
+                        Posthead.setVisibility(View.GONE);
+                        break;
+                    case "Watch":
+                        typeOfBag.setVisibility(View.GONE);
+                        imeiEditText.setVisibility(View.GONE);
                         spinHead.setVisibility(View.GONE);
-                        spinPlace.setVisibility(View.VISIBLE);
+                        Postphone.setVisibility(View.GONE);
+                        Postbag.setVisibility(View.GONE);
+                        Postpurse.setVisibility(View.GONE);
+                        Posthead.setVisibility(View.GONE);
+                        break;
+                    case "Purse":
+                        typeOfBag.setVisibility(View.GONE);
+                        modelNameEditText.setVisibility(View.GONE);
+                        imeiEditText.setVisibility(View.GONE);
                         spinWatch.setVisibility(View.GONE);
-                        dateoflost.setVisibility((View.VISIBLE));
-
-                    }
-                    else if (selectedValue.equals("Headphones")) {
-                        llc.setVisibility(View.VISIBLE);
-                        BrandName.setVisibility(View.VISIBLE);
-                        ModelName.setVisibility(View.VISIBLE);
-                        ImeiNumber.setVisibility(View.GONE);
-                        ColorName.setVisibility(View.VISIBLE);
-                        UniqueIn.setVisibility(View.VISIBLE);
-                        spinPlace.setVisibility(View.VISIBLE);
-                        ValuablesIn.setVisibility(View.GONE);
-                        spinHead.setVisibility(View.VISIBLE);
+                        spinHead.setVisibility(View.GONE);
+                        Postwatch.setVisibility(View.GONE);
+                        Postbag.setVisibility(View.GONE);
+                        Postphone.setVisibility(View.GONE);
+                        Posthead.setVisibility(View.GONE);
+                        break;
+                    case "Headphones":
+                        typeOfBag.setVisibility(View.GONE);
+                        imeiEditText.setVisibility(View.GONE);
                         spinWatch.setVisibility(View.GONE);
-                        dateoflost.setVisibility((View.VISIBLE));
-                    }else {
-                        // For other items, hide all EditText views
+                        Postwatch.setVisibility(View.GONE);
+                        Postbag.setVisibility(View.GONE);
+                        Postpurse.setVisibility(View.GONE);
+                        Postphone.setVisibility(View.GONE);
+                        break;
+                    default:
                         llc.setVisibility(View.GONE);
-                    }
                 }
+
+            }
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                // Do nothing here
             }
         });
-        PostButton.setOnClickListener(new View.OnClickListener() {
+        cachefromlogin = getSharedPreferences("MyPreferencesFromLogin",MODE_PRIVATE);
+        String registerNum = cachefromlogin.getString("useridfromlogin","");
+        Postphone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                postToDB();
+                postToDBphone(registerNum);
             }
         });
+        Postwatch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) { postToDBwatch(registerNum); }
+        });
+        Postbag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) { postToDBbag(registerNum); }
+        });
+        Postpurse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){ postToDBpurse(registerNum); }
+        });
+        Posthead.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) { postToDBhead(registerNum);}
+        });
     }
-    private void openFileChooser() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, PICK_IMAGE_REQUEST);
-    }
-    private void hideViews(){
-        llc.setVisibility(View.GONE);
-        BrandName.setVisibility(View.GONE);
-        ModelName.setVisibility(View.GONE);
-        ImeiNumber.setVisibility(View.GONE);
-        ColorName.setVisibility(View.GONE);
-        UniqueIn.setVisibility(View.GONE);
-        ValuablesIn.setVisibility(View.GONE);
-        spinHead.setVisibility(View.GONE);
-        spinWatch.setVisibility(View.GONE);
-        spinPlace.setVisibility(View.GONE);
-        dateoflost.setVisibility((View.GONE));
-    }
-    private void hideViews2(){
-        AadharName.setVisibility(View.GONE);
-        AadharNumber.setVisibility(View.GONE);
-        BankName.setVisibility(View.GONE);
-        CardName.setVisibility(View.GONE);
-        LicenseName.setVisibility(View.GONE);
-        DOBinPAN.setVisibility(View.GONE);
-        DOBinLicense.setVisibility(View.GONE);
-        PANname.setVisibility(View.GONE);
-        OtherThing.setVisibility(View.GONE);
-    }
-
-        private void postToDB(){
-            brandname = BrandName.getText().toString();
-            modelname = ModelName.getText().toString();
-            imeinum = ImeiNumber.getText().toString();
-            colorname = ColorName.getText().toString();
-            uniquefeature = UniqueIn.getText().toString();
-            datelost = dateoflost.getText().toString();
-
-
-            cachefromlogin = getSharedPreferences("MyPreferencesFromLogin",MODE_PRIVATE);
-            String registerNum = cachefromlogin.getString("useridfromlogin","");
-
+        private void postToDBphone(String registerNum){
+            brandname = brandNameEditText.getText().toString();
+            modelname = modelNameEditText.getText().toString();
+            imeinum = imeiEditText.getText().toString();
+            colorname = colorEditText.getText().toString();
+            uniquefeature = uniqueEditText.getText().toString();
+            datelost = dateOfLostEditText.getText().toString();
             lostdb.child("users").child(registerNum).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    lostdb.child("users").child(registerNum).child("lost").child(selectedValue).child("Brand Name").setValue(brandname);
-                    lostdb.child("users").child(registerNum).child("lost").child(selectedValue).child("Model Name").setValue(modelname);
-                    lostdb.child("users").child(registerNum).child("lost").child(selectedValue).child("IMEI Number").setValue(imeinum);
-                    lostdb.child("users").child(registerNum).child("lost").child(selectedValue).child("Color").setValue(colorname);
-                    lostdb.child("users").child(registerNum).child("lost").child(selectedValue).child("Uniqueness").setValue(uniquefeature);
-                    lostdb.child("users").child(registerNum).child("lost").child(selectedValue).child("ValuablesInside").setValue(selectedValuable);
-                    lostdb.child("users").child(registerNum).child("lost").child(selectedValue).child("Date").setValue(datelost);
-                    lostdb.child("users").child(registerNum).child("lost").child(selectedValue).child("Watch Type").setValue(selectedWatch);
-                    lostdb.child("users").child(registerNum).child("lost").child(selectedValue).child("Headphone Type").setValue(selectedheadphone);
-                    lostdb.child("users").child(registerNum).child("lost").child(selectedValue).child("Location").setValue(selectedplace);
-
+                    DatabaseReference ref = lostdb.child("users").child(registerNum).child("lost").child(selectedValue);
+                    ref.child("Brand Name").setValue(brandname);
+                    ref.child("Model Name").setValue(modelname);
+                    ref.child("IMEI Number").setValue(imeinum);
+                    ref.child("Color").setValue(colorname);
+                    ref.child("Uniqueness").setValue(uniquefeature);
+                    ref.child("Date").setValue(datelost);
+                    ref.child("Location").setValue(selectedplace);
                 }
-
-                @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-
                 }
             });
-            Toast.makeText(LostForm.this,"Posted Successfully :)",Toast.LENGTH_SHORT).show();
+            intcall();
         }
+        private void postToDBwatch(String registerNum){
+            brandname = brandNameEditText.getText().toString();
+            modelname = modelNameEditText.getText().toString();
+            colorname = colorEditText.getText().toString();
+            uniquefeature = uniqueEditText.getText().toString();
+            datelost = dateOfLostEditText.getText().toString();
+            lostdb.child("users").child(registerNum).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    DatabaseReference ref = lostdb.child("users").child(registerNum).child("lost").child(selectedValue);
+                    ref.child("Brand Name").setValue(brandname);
+                    ref.child("Model Name").setValue(modelname);
+                    ref.child("Color").setValue(colorname);
+                    ref.child("Uniqueness").setValue(uniquefeature);
+                    ref.child("Date").setValue(datelost);
+                    ref.child("Watch Type").setValue(selectedWatch);
+                    ref.child("Location").setValue(selectedplace);
+                }
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
+            intcall();
+        }
+    private void postToDBbag(String registerNum){
+        brandname = brandNameEditText.getText().toString();
+        modelname = modelNameEditText.getText().toString();
+        colorname = colorEditText.getText().toString();
+        uniquefeature = uniqueEditText.getText().toString();
+        datelost = dateOfLostEditText.getText().toString();
+        lostdb.child("users").child(registerNum).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                DatabaseReference ref = lostdb.child("users").child(registerNum).child("lost").child(selectedValue);
+                ref.child("Brand Name").setValue(brandname);
+                ref.child("Model Name").setValue(modelname);
+                ref.child("Color").setValue(colorname);
+                ref.child("Uniqueness").setValue(uniquefeature);
+                ref.child("Date").setValue(datelost);
+                ref.child("Bag Type").setValue(selectedBag);
+                ref.child("Location").setValue(selectedplace);
+            }
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+        intcall();
+    }
 
+        private void postToDBpurse(String registerNum){
+            brandname = brandNameEditText.getText().toString();
+            colorname = colorEditText.getText().toString();
+            uniquefeature = uniqueEditText.getText().toString();
+            datelost = dateOfLostEditText.getText().toString();
+            lostdb.child("users").child(registerNum).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    DatabaseReference ref = lostdb.child("users").child(registerNum).child("lost").child(selectedValue);
+                    ref.child("Brand Name").setValue(brandname);
+                    ref.child("Color").setValue(colorname);
+                    ref.child("Uniqueness").setValue(uniquefeature);
+                    ref.child("Date").setValue(datelost);
+                    ref.child("Location").setValue(selectedplace);
+                }
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
+            intcall();
+        }
+        private void postToDBhead(String registerNum){
+            brandname = brandNameEditText.getText().toString();
+            modelname = modelNameEditText.getText().toString();
+            colorname = colorEditText.getText().toString();
+            uniquefeature = uniqueEditText.getText().toString();
+            datelost = dateOfLostEditText.getText().toString();
+            lostdb.child("users").child(registerNum).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    DatabaseReference ref = lostdb.child("users").child(registerNum).child("lost").child(selectedValue);
+                    ref.child("Brand Name").setValue(brandname);
+                    ref.child("Model Name").setValue(modelname);
+                    ref.child("Color").setValue(colorname);
+                    ref.child("Uniqueness").setValue(uniquefeature);
+                    ref.child("Date").setValue(datelost);
+                    ref.child("Headphone Type").setValue(selectedheadphone);
+                    ref.child("Location").setValue(selectedplace);
+                }
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
+            intcall();
+        }
+        private void intcall(){
+            Intent tosuccess = new Intent(LostForm.this, SuccessfulPost.class);
+            startActivity(tosuccess);
+        }
 
 }

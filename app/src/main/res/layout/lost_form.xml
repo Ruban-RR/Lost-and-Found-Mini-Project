@@ -31,29 +31,17 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
-
-    <LinearLayout
+   <LinearLayout
         android:id="@+id/linearLayoutContainer"
         android:layout_width="wrap_content"
-        android:layout_height="500dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="vertical"
         android:layout_marginTop="15dp"
-        android:scrollbars="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lostthing">
         <!-- EditText fields will be dynamically added here -->
-
-        <EditText
-            android:id="@+id/Model"
-            android:layout_width="match_parent"
-            android:layout_height="43dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/cutomized_edittext"
-            android:hint="Model"
-            android:textColorHint="@color/white" />
-
         <EditText
             android:id="@+id/Brand"
             android:layout_width="210dp"
@@ -63,7 +51,14 @@
             android:hint="Brand Name"
             android:textColor="@color/white"
             android:textColorHint="@color/white" />
-
+       <EditText
+           android:id="@+id/Model"
+           android:layout_width="match_parent"
+           android:layout_height="43dp"
+           android:layout_marginBottom="12dp"
+           android:background="@drawable/cutomized_edittext"
+           android:hint="Model"
+           android:textColorHint="@color/white" />
         <EditText
             android:id="@+id/IMEI"
             android:layout_width="210dp"
@@ -108,15 +103,16 @@
             android:inputType="date"
             android:textColorHint="@color/white" />
 
-        <Spinner
-            android:id="@+id/Valuables"
-            android:layout_width="210dp"
-            android:layout_height="45dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/cutomized_edittext"
-            android:textColorHint="@color/white"
-            tools:layout_editor_absoluteX="101dp"
-            tools:layout_editor_absoluteY="218dp" />
+
+<!--        <Spinner-->
+<!--            android:id="@+id/Valuables"-->
+<!--            android:layout_width="210dp"-->
+<!--            android:layout_height="45dp"-->
+<!--            android:layout_marginBottom="12dp"-->
+<!--            android:background="@drawable/cutomized_edittext"-->
+<!--            android:textColorHint="@color/white"-->
+<!--            tools:layout_editor_absoluteX="101dp"-->
+<!--            tools:layout_editor_absoluteY="218dp" />-->
 
 
 
@@ -146,120 +142,171 @@
             android:background="@drawable/cutomized_edittext"
             tools:layout_editor_absoluteX="101dp"
             tools:layout_editor_absoluteY="218dp" />
+       <Spinner
+           android:id="@+id/BagType"
+           android:layout_width="210dp"
+           android:layout_height="45dp"
+           android:layout_marginBottom="12dp"
+           android:background="@drawable/cutomized_edittext"
+           tools:layout_editor_absoluteX="101dp"
+           tools:layout_editor_absoluteY="218dp" />
 
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/linearLayoutContainer2"
-        android:layout_width="wrap_content"
-        android:layout_height="540dp"
-        android:layout_gravity="center"
-        android:orientation="vertical"
-        android:layout_marginTop="15dp"
-        android:scrollbars="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayoutContainer"
-        >
-        <EditText
-            android:id="@+id/aadharname"
-            android:layout_width="210dp"
-            android:layout_height="43dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/cutomized_edittext"
-            android:hint="Name in Aadhar"
-            android:inputType="text"
-            android:textColorHint="@color/white" />
 
-        <EditText
-            android:id="@+id/aadharnumber"
-            android:layout_width="210dp"
-            android:layout_height="43dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/cutomized_edittext"
-            android:hint="Aadhar Number"
-            android:inputType="number"
-            android:textColorHint="@color/white" />
+       <Button
+           android:id="@+id/PostPhone"
+           android:layout_width="210dp"
+           android:layout_height="45dp"
+           android:layout_marginBottom="12dp"
+           android:background="@drawable/customize_button"
+           android:hint="POST"
+           android:textColor="@color/white"
+           android:textColorHint="@color/white"
+           tools:layout_editor_absoluteX="101dp"
+           tools:layout_editor_absoluteY="218dp" />
+       <Button
+           android:id="@+id/PostWatch"
+           android:layout_width="210dp"
+           android:layout_height="45dp"
+           android:layout_marginBottom="12dp"
+           android:background="@drawable/customize_button"
+           android:hint="POST"
+           android:textColor="@color/white"
+           android:textColorHint="@color/white"
+           tools:layout_editor_absoluteX="101dp"
+           tools:layout_editor_absoluteY="218dp" />
+       <Button
+           android:id="@+id/PostBag"
+           android:layout_width="210dp"
+           android:layout_height="45dp"
+           android:layout_marginBottom="12dp"
+           android:background="@drawable/customize_button"
+           android:hint="POST"
+           android:textColor="@color/white"
+           android:textColorHint="@color/white"
+           tools:layout_editor_absoluteX="101dp"
+           tools:layout_editor_absoluteY="218dp" />
+       <Button
+           android:id="@+id/PostPurse"
+           android:layout_width="210dp"
+           android:layout_height="45dp"
+           android:layout_marginBottom="12dp"
+           android:background="@drawable/customize_button"
+           android:hint="POST"
+           android:textColor="@color/white"
+           android:textColorHint="@color/white"
+           tools:layout_editor_absoluteX="101dp"
+           tools:layout_editor_absoluteY="218dp" />
+       <Button
+           android:id="@+id/PostHead"
+           android:layout_width="210dp"
+           android:layout_height="45dp"
+           android:layout_marginBottom="12dp"
+           android:background="@drawable/customize_button"
+           android:hint="POST"
+           android:textColor="@color/white"
+           android:textColorHint="@color/white"
+           tools:layout_editor_absoluteX="101dp"
+           tools:layout_editor_absoluteY="218dp" />
+<!--        <EditText-->
+<!--            android:id="@+id/aadharname"-->
+<!--            android:layout_width="210dp"-->
+<!--            android:layout_height="43dp"-->
+<!--            android:layout_marginBottom="12dp"-->
+<!--            android:background="@drawable/cutomized_edittext"-->
+<!--            android:hint="Name in Aadhar"-->
+<!--            android:inputType="text"-->
+<!--            android:textColorHint="@color/white" />-->
 
-        <Spinner
-            android:id="@+id/bankname"
-            android:layout_width="210dp"
-            android:layout_height="43dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/cutomized_edittext"
-            android:inputType="text"
-            android:textColorHint="@color/white" />
+<!--        <EditText-->
+<!--            android:id="@+id/aadharnumber"-->
+<!--            android:layout_width="210dp"-->
+<!--            android:layout_height="43dp"-->
+<!--            android:layout_marginBottom="12dp"-->
+<!--            android:background="@drawable/cutomized_edittext"-->
+<!--            android:hint="Aadhar Number"-->
+<!--            android:inputType="number"-->
+<!--            android:textColorHint="@color/white" />-->
 
-        <EditText
-            android:id="@+id/nameincard"
-            android:layout_width="210dp"
-            android:layout_height="43dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/cutomized_edittext"
-            android:hint="Name on card"
-            android:inputType="text"
-            android:textColorHint="@color/white" />
+<!--        <Spinner-->
+<!--            android:id="@+id/bankname"-->
+<!--            android:layout_width="210dp"-->
+<!--            android:layout_height="43dp"-->
+<!--            android:layout_marginBottom="12dp"-->
+<!--            android:background="@drawable/cutomized_edittext"-->
+<!--            android:inputType="text"-->
+<!--            android:textColorHint="@color/white" />-->
 
-        <EditText
-            android:id="@+id/licensename"
-            android:layout_width="210dp"
-            android:layout_height="43dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/cutomized_edittext"
-            android:hint="Name on license"
-            android:inputType="text"
-            android:textColorHint="@color/white" />
+<!--        <EditText-->
+<!--            android:id="@+id/nameincard"-->
+<!--            android:layout_width="210dp"-->
+<!--            android:layout_height="43dp"-->
+<!--            android:layout_marginBottom="12dp"-->
+<!--            android:background="@drawable/cutomized_edittext"-->
+<!--            android:hint="Name on card"-->
+<!--            android:inputType="text"-->
+<!--            android:textColorHint="@color/white" />-->
 
-        <EditText
-            android:id="@+id/licencedob"
-            android:layout_width="210dp"
-            android:layout_height="43dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/cutomized_edittext"
-            android:hint="DOB on License"
-            android:inputType="text"
-            android:textColorHint="@color/white" />
+<!--        <EditText-->
+<!--            android:id="@+id/licensename"-->
+<!--            android:layout_width="210dp"-->
+<!--            android:layout_height="43dp"-->
+<!--            android:layout_marginBottom="12dp"-->
+<!--            android:background="@drawable/cutomized_edittext"-->
+<!--            android:hint="Name on license"-->
+<!--            android:inputType="text"-->
+<!--            android:textColorHint="@color/white" />-->
 
-        <EditText
-            android:id="@+id/nameinpan"
-            android:layout_width="210dp"
-            android:layout_height="43dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/cutomized_edittext"
-            android:hint="Name on PAN"
-            android:inputType="text"
-            android:textColorHint="@color/white" />
+<!--        <EditText-->
+<!--            android:id="@+id/licencedob"-->
+<!--            android:layout_width="210dp"-->
+<!--            android:layout_height="43dp"-->
+<!--            android:layout_marginBottom="12dp"-->
+<!--            android:background="@drawable/cutomized_edittext"-->
+<!--            android:hint="DOB on License"-->
+<!--            android:inputType="text"-->
+<!--            android:textColorHint="@color/white" />-->
 
-        <EditText
-            android:id="@+id/dobinpan"
-            android:layout_width="210dp"
-            android:layout_height="43dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/cutomized_edittext"
-            android:hint="DOB in PAN"
-            android:inputType="date"
-            android:textColorHint="@color/white" />
+<!--        <EditText-->
+<!--            android:id="@+id/nameinpan"-->
+<!--            android:layout_width="210dp"-->
+<!--            android:layout_height="43dp"-->
+<!--            android:layout_marginBottom="12dp"-->
+<!--            android:background="@drawable/cutomized_edittext"-->
+<!--            android:hint="Name on PAN"-->
+<!--            android:inputType="text"-->
+<!--            android:textColorHint="@color/white" />-->
 
-        <EditText
-            android:id="@+id/otherthing"
-            android:layout_width="210dp"
-            android:layout_height="43dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/cutomized_edittext"
-            android:hint="Name on"
-            android:inputType="text"
-            android:textColorHint="@color/white"
-            />
-        <Button
-            android:id="@+id/Post"
-            android:layout_width="210dp"
-            android:layout_height="45dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/customize_button"
-            android:hint="POST"
-            android:textColor="@color/white"
-            android:textColorHint="@color/white"
-            tools:layout_editor_absoluteX="101dp"
-            tools:layout_editor_absoluteY="218dp" />
+<!--        <EditText-->
+<!--            android:id="@+id/dobinpan"-->
+<!--            android:layout_width="210dp"-->
+<!--            android:layout_height="43dp"-->
+<!--            android:layout_marginBottom="12dp"-->
+<!--            android:background="@drawable/cutomized_edittext"-->
+<!--            android:hint="DOB in PAN"-->
+<!--            android:inputType="date"-->
+<!--            android:textColorHint="@color/white" />-->
+
+<!--        <EditText-->
+<!--            android:id="@+id/otherthing"-->
+<!--            android:layout_width="210dp"-->
+<!--            android:layout_height="43dp"-->
+<!--            android:layout_marginBottom="12dp"-->
+<!--            android:background="@drawable/cutomized_edittext"-->
+<!--            android:hint="Name on"-->
+<!--            android:inputType="text"-->
+<!--            android:textColorHint="@color/white"-->
+<!--            />-->
+<!--        <Button-->
+<!--            android:id="@+id/Post"-->
+<!--            android:layout_width="210dp"-->
+<!--            android:layout_height="45dp"-->
+<!--            android:layout_marginBottom="12dp"-->
+<!--            android:background="@drawable/customize_button"-->
+<!--            android:hint="POST"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:textColorHint="@color/white"-->
+<!--            tools:layout_editor_absoluteX="101dp"-->
+<!--            tools:layout_editor_absoluteY="218dp" />-->
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
 

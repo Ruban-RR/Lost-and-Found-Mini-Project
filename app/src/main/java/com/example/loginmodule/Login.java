@@ -66,10 +66,7 @@ public class Login extends AppCompatActivity {
             public void onClick(View v) {
                 String numberfield = userid.getText().toString();
                 String passwordfield = password.getText().toString();
-                SharedPreferences.Editor edit = cachefromlogin.edit();
-                edit.putString("useridfromlogin",numberfield);
-                edit.putString("passwordfromlogin",passwordfield);
-                edit.apply();
+
                 if (numberfield.isEmpty()) {
                     Toast.makeText(Login.this, "Enter Register Number!", Toast.LENGTH_SHORT).show();
                     return;
@@ -96,19 +93,29 @@ public class Login extends AppCompatActivity {
         logindb.child("users").child(numberfield).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()){
-                    String passondb = snapshot.child("password").getValue(String.class);
-                    if (passwordfield.equals(passondb)){
-                        Toast.makeText(Login.this, "Successfully Logged in",Toast.LENGTH_SHORT).show();
-                        Intent loginButton = new Intent(Login.this, HomePage.class);
-                        startActivity(loginButton);
-                    }else {
-                        Toast.makeText(Login.this, "Incorrect password",Toast.LENGTH_SHORT).show();
+                    if (snapshot.exists()){
+                        String passondb = snapshot.child("password").getValue(String.class);
+                        if (passwordfield.equals(passondb)){
+                            Toast.makeText(Login.this, "Successfully Logged in",Toast.LENGTH_SHORT).show();
+                            Intent loginButton = new Intent(Login.this, HomePage.class);
+                            loginButton.putExtra("MyAccountActivity","LoginActivity");
+                            startActivity(loginButton);
+                        }else {
+                            Toast.makeText(Login.this, "Incorrect password",Toast.LENGTH_SHORT).show();
+                        }
+                    }else{
+                        Toast.makeText(Login.this, "User ID not exist",Toast.LENGTH_SHORT).show();
                     }
-                }else{
-                    Toast.makeText(Login.this, "User ID not exist",Toast.LENGTH_SHORT).show();
-                }
-
+                String deptOnDb = snapshot.child("department").getValue(String.class);
+                String sectionOnDb = snapshot.child("section").getValue(String.class);
+                String emailID = snapshot.child("email").getValue(String.class);
+                SharedPreferences.Editor edit = cachefromlogin.edit();
+                edit.putString("useridfromlogin",numberfield);
+                edit.putString("passwordfromlogin",passwordfield);
+                edit.putString("deptfromlogin",deptOnDb);
+                edit.putString("sectionfromlogin",sectionOnDb);
+                edit.putString("emailfromlogin",emailID);
+                edit.apply();
             }
 
             @Override

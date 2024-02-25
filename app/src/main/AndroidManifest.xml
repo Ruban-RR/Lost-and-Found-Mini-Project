@@ -11,6 +11,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LoginModule"
         tools:targetApi="31">
+        <activity android:name="homepagemodule.SuccessfulPost"
+            android:exported="false"/>
         <activity
             android:name="homepagemodule.FoundForm"
             android:exported="false"/>

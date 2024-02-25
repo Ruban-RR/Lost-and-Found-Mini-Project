@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
         if (!cachedUserId.isEmpty() && !cachedPassword.isEmpty()) {
             // Cached credentials exist, navigate to HomePage
             Intent homeIntent = new Intent(MainActivity.this, HomePage.class);
+            homeIntent.putExtra("MyAccountActivity","LoginActivity");
             homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(homeIntent);
             finish();  // Finish MainActivity to prevent going back to it using the back button

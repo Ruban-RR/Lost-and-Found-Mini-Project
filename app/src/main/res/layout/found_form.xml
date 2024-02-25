@@ -13,9 +13,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Found Somehing?"
+        android:text="Found Something?"
         android:textColor="#FFFFFF"
-        android:textSize="34sp"
+        android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,17 +34,14 @@
 
     <LinearLayout
         android:id="@+id/flinearLayoutContainer"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:layout_gravity="center"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="15dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        tools:ignore="MissingConstraints">
+        app:layout_constraintTop_toBottomOf="@+id/foundthing">
         <!-- EditText fields will be dynamically added here -->
         <EditText
             android:id="@+id/fBrand"
@@ -101,18 +98,6 @@
             android:textColorHint="@color/white"
             tools:layout_editor_absoluteX="101dp"
             tools:layout_editor_absoluteY="218dp" />
-
-        <EditText
-            android:id="@+id/fValuables"
-            android:layout_width="210dp"
-            android:layout_height="45dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/cutomized_edittext"
-            android:hint="Valuables Inside"
-            android:textColorHint="@color/white"
-            tools:layout_editor_absoluteX="101dp"
-            tools:layout_editor_absoluteY="218dp" />
-
         <EditText
             android:id="@+id/fDate"
             android:layout_width="210dp"
@@ -150,6 +135,14 @@
             android:background="@drawable/cutomized_edittext"
             tools:layout_editor_absoluteX="101dp"
             tools:layout_editor_absoluteY="218dp" />
+        <Spinner
+            android:id="@+id/fBagType"
+            android:layout_width="210dp"
+            android:layout_height="45dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/cutomized_edittext"
+            tools:layout_editor_absoluteX="101dp"
+            tools:layout_editor_absoluteY="218dp" />
 
         <Button
             android:id="@+id/fImageUpload"
@@ -163,11 +156,56 @@
             tools:layout_editor_absoluteY="218dp" />
         <ImageView
             android:id="@+id/fimageView"
-            android:layout_width="wrap_content"
-            android:layout_height="45dp"
-            />
+            android:layout_gravity="center"
+            android:layout_marginBottom="7dp"
+            android:layout_width="210dp"
+            android:layout_height="45dp" />
         <Button
-            android:id="@+id/fPost"
+            android:id="@+id/fPostPhone"
+            android:layout_width="210dp"
+            android:layout_height="45dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/customize_button"
+            android:hint="POST"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            tools:layout_editor_absoluteX="101dp"
+            tools:layout_editor_absoluteY="218dp" />
+        <Button
+            android:id="@+id/fPostWatch"
+            android:layout_width="210dp"
+            android:layout_height="45dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/customize_button"
+            android:hint="POST"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            tools:layout_editor_absoluteX="101dp"
+            tools:layout_editor_absoluteY="218dp" />
+        <Button
+            android:id="@+id/fPostBag"
+            android:layout_width="210dp"
+            android:layout_height="45dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/customize_button"
+            android:hint="POST"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            tools:layout_editor_absoluteX="101dp"
+            tools:layout_editor_absoluteY="218dp" />
+        <Button
+            android:id="@+id/fPostPurse"
+            android:layout_width="210dp"
+            android:layout_height="45dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/customize_button"
+            android:hint="POST"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            tools:layout_editor_absoluteX="101dp"
+            tools:layout_editor_absoluteY="218dp" />
+        <Button
+            android:id="@+id/fPostHead"
             android:layout_width="210dp"
             android:layout_height="45dp"
             android:layout_marginBottom="12dp"

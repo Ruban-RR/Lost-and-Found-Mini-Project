@@ -25,14 +25,14 @@ public class CreateAccountPage extends AppCompatActivity {
     private Button backto, creatingbutton;
     private EditText registerfield, passwordfield, repasswordfield, department, section, email;
     private DatabaseReference db;
-    private SharedPreferences cache;
+    private SharedPreferences cacheFromCreateAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account_page);
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        cache = getSharedPreferences("MyPreferences", MODE_PRIVATE);
+        cacheFromCreateAccount = getSharedPreferences("MyPreferencesFromCreateAccount", MODE_PRIVATE);
 
 
         backto = findViewById(R.id.back2);
@@ -107,16 +107,16 @@ public class CreateAccountPage extends AppCompatActivity {
                     db.child("users").child(num).child("department").setValue(dept);
                     db.child("users").child(num).child("section").setValue(sec);
                     db.child("users").child(num).child("email").setValue(emailid);
-                    SharedPreferences.Editor edit = cache.edit();
-                    edit.putString("cacheUserID",num);
-                    edit.putString("cachePassword",password);
-                    edit.putString("cacheDepartment",dept);
-                    edit.putString("cacheSection",sec);
-                    edit.putString("cacheEmail",emailid);
-                    edit.apply();
-
-
+                    SharedPreferences.Editor editCreateAccount = cacheFromCreateAccount.edit();
+                    editCreateAccount.putString("cacheUserID",num);
+                    editCreateAccount.putString("cachePassword",password);
+                    editCreateAccount.putString("cacheDepartment",dept);
+                    editCreateAccount.putString("cacheSection",sec);
+                    editCreateAccount.putString("cacheEmail",emailid);
+                    editCreateAccount.apply();
+                    Toast.makeText(CreateAccountPage.this, "Account Created Successfully!", Toast.LENGTH_SHORT).show();
                     Intent tohome = new Intent(CreateAccountPage.this, HomePage.class);
+                    tohome.putExtra("MyAccountActivity","CreateAccountActivity");
                     tohome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(tohome);
                     finish();
