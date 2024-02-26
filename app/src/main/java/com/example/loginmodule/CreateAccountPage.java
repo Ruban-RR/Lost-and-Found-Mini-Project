@@ -26,6 +26,7 @@ public class CreateAccountPage extends AppCompatActivity {
     private EditText registerfield, passwordfield, repasswordfield, department, section, email;
     private DatabaseReference db;
     private SharedPreferences cacheFromCreateAccount;
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +70,20 @@ public class CreateAccountPage extends AppCompatActivity {
         sec = section.getText().toString().trim();
         emailid = email.getText().toString().trim();
 
-        if (num.isEmpty() || password.isEmpty()) {
-            Toast.makeText(CreateAccountPage.this, "Fill the empty fields", Toast.LENGTH_SHORT).show();
+        if (num.isEmpty()) {
+            Toast.makeText(CreateAccountPage.this, "Enter Register Number", Toast.LENGTH_SHORT).show();
+            return;
+        }
+//        else if (num.length()<13){
+//            Toast.makeText(CreateAccountPage.this, "Enter Valid Register Number", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+        else if (password.isEmpty()){
+            Toast.makeText(CreateAccountPage.this, "Enter Password", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        else if (confirmPassword.isEmpty()){
+            Toast.makeText(CreateAccountPage.this, "Retype Password", Toast.LENGTH_SHORT).show();
             return;
         }
         else if(password.length()<8){
@@ -93,7 +106,10 @@ public class CreateAccountPage extends AppCompatActivity {
             Toast.makeText(CreateAccountPage.this, "Enter Email ID", Toast.LENGTH_SHORT).show();
             return;
         }
-
+        else if (!isValidEmail(emailid)) {
+            Toast.makeText(CreateAccountPage.this, "Enter a valid Email ID", Toast.LENGTH_SHORT).show();
+            return;
+        }
         // The uniqueKey generation should be based on the user's registration number, not the password
         String uniqueKey = String.valueOf(db.child("users").child(num).push().getKey());
 
@@ -131,6 +147,11 @@ public class CreateAccountPage extends AppCompatActivity {
                 error.getCode();
             }
         });
+    }
+
+    private boolean isValidEmail(String emailid) {
+        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
+        return emailid.matches(emailRegex);
     }
 
 }

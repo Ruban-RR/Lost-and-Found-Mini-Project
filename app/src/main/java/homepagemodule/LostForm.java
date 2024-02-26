@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -29,7 +31,7 @@ public class LostForm extends AppCompatActivity {
     private EditText brandNameEditText, modelNameEditText, imeiEditText, colorEditText, uniqueEditText, dateOfLostEditText;
     private Button  Postphone, Postwatch, Postbag, Postpurse, Posthead ;
     private Spinner spinHead, spinWatch, spinPlace, typeOfBag;
-    private DatabaseReference lostdb;
+    private DatabaseReference lostdb, compareRef;
     private SharedPreferences cachefromlogin;
     public static String brandname, modelname, imeinum, colorname, uniquefeature, datelost;
     @Override
@@ -39,6 +41,8 @@ public class LostForm extends AppCompatActivity {
 
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         lostdb = FirebaseDatabase.getInstance().getReference();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        compareRef = database.getReference("users");
 
         // Initialize layout elements after setting the content view
         llc = findViewById(R.id.linearLayoutContainer);
@@ -226,12 +230,17 @@ public class LostForm extends AppCompatActivity {
         });
     }
         private void postToDBphone(String registerNum){
-            brandname = brandNameEditText.getText().toString();
-            modelname = modelNameEditText.getText().toString();
-            imeinum = imeiEditText.getText().toString();
-            colorname = colorEditText.getText().toString();
-            uniquefeature = uniqueEditText.getText().toString();
-            datelost = dateOfLostEditText.getText().toString();
+            brandname = brandNameEditText.getText().toString().toLowerCase().trim();
+            modelname = modelNameEditText.getText().toString().toLowerCase().trim();
+            imeinum = imeiEditText.getText().toString().toLowerCase().trim();
+            colorname = colorEditText.getText().toString().toLowerCase().trim();
+            uniquefeature = uniqueEditText.getText().toString().toLowerCase().trim();
+            datelost = dateOfLostEditText.getText().toString().toLowerCase().trim();
+
+            if (brandname.isEmpty()||modelname.isEmpty()||imeinum.isEmpty()||colorname.isEmpty()||
+                    uniquefeature.isEmpty()|| datelost.isEmpty() || selectedplace.isEmpty()) {
+                Toast.makeText(LostForm.this, "Enter the blank fields!", Toast.LENGTH_SHORT).show();
+            }else{
             lostdb.child("users").child(registerNum).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -248,13 +257,22 @@ public class LostForm extends AppCompatActivity {
                 }
             });
             intcall();
+            }
+            Log.d("before method call","yes");
+            matchItemsPhone(selectedValue,brandname,modelname,imeinum,colorname,
+                    uniquefeature, datelost,selectedplace);
+
         }
         private void postToDBwatch(String registerNum){
-            brandname = brandNameEditText.getText().toString();
-            modelname = modelNameEditText.getText().toString();
-            colorname = colorEditText.getText().toString();
-            uniquefeature = uniqueEditText.getText().toString();
-            datelost = dateOfLostEditText.getText().toString();
+            brandname = brandNameEditText.getText().toString().toLowerCase().trim();
+            modelname = modelNameEditText.getText().toString().toLowerCase().trim();
+            colorname = colorEditText.getText().toString().toLowerCase().trim();
+            uniquefeature = uniqueEditText.getText().toString().toLowerCase().trim();
+            datelost = dateOfLostEditText.getText().toString().toLowerCase().trim();
+            if (brandname.isEmpty()||modelname.isEmpty()||colorname.isEmpty()||selectedWatch.isEmpty()||
+                    uniquefeature.isEmpty()|| datelost.isEmpty() || selectedplace.isEmpty()) {
+                Toast.makeText(LostForm.this, "Enter the blank fields!", Toast.LENGTH_SHORT).show();
+            }else{
             lostdb.child("users").child(registerNum).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -270,14 +288,66 @@ public class LostForm extends AppCompatActivity {
                 public void onCancelled(@NonNull DatabaseError error) {
                 }
             });
-            intcall();
+            intcall();}
+            matchItemsWatch(selectedValue,brandname,modelname,colorname,uniquefeature,datelost,selectedplace,selectedWatch);
         }
+
+    private void matchItemsWatch(String selectedValue,String brandname, String modelname, String colorname, String uniquefeature, String datelost, String selectedplace, String selectedWatch) {
+        compareRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot registerSnapshot : snapshot.getChildren()){
+                    String registerid = registerSnapshot.getKey();
+                    // Log.d("for1",registerid);
+                    boolean found = registerSnapshot.hasChild("found");
+                    if (found) {
+                        //Log.d("Boolean","True");
+                        for (DataSnapshot foundSnapshot : registerSnapshot.child("found").getChildren()) {
+                            String itemName = foundSnapshot.getKey();
+                            //Log.d("for2", itemName);
+                            if (itemName.equals(selectedValue)) {
+                                // Log.d("item","equals");
+                                String BRAND = foundSnapshot.child("Brand Name").getValue(String.class);
+                                String MODEL = foundSnapshot.child("Model Name").getValue(String.class);
+                                String COLOR = foundSnapshot.child("Color").getValue(String.class);
+                                String UNIQUE =foundSnapshot.child("Uniqueness").getValue(String.class);
+                                String PLACE = foundSnapshot.child("Location").getValue(String.class);
+                                String DATE = foundSnapshot.child("Date").getValue(String.class);
+                                String WATCH = foundSnapshot.child("Watch Type").getValue(String.class);
+
+                                if (BRAND.equals(brandname) && MODEL.equals(modelname)
+                                        && COLOR.equals(colorname) && UNIQUE.equals(uniquefeature)
+                                        && PLACE.equals(selectedplace) && WATCH.equals(selectedWatch)
+                                        && DATE.equals(datelost)){
+                                    Log.d("item", "found");
+                                } else {
+                                    Log.d("item", "not found");
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
     private void postToDBbag(String registerNum){
-        brandname = brandNameEditText.getText().toString();
-        modelname = modelNameEditText.getText().toString();
-        colorname = colorEditText.getText().toString();
-        uniquefeature = uniqueEditText.getText().toString();
-        datelost = dateOfLostEditText.getText().toString();
+        brandname = brandNameEditText.getText().toString().toLowerCase().trim();
+        modelname = modelNameEditText.getText().toString().toLowerCase().trim();
+        colorname = colorEditText.getText().toString().toLowerCase().trim();
+        uniquefeature = uniqueEditText.getText().toString().toLowerCase().trim();
+        datelost = dateOfLostEditText.getText().toString().toLowerCase().trim();
+        if (brandname.isEmpty()||modelname.isEmpty()||colorname.isEmpty()||
+                uniquefeature.isEmpty()|| datelost.isEmpty() || selectedplace.isEmpty()||selectedBag.isEmpty()) {
+            Toast.makeText(LostForm.this, "Enter the blank fields!", Toast.LENGTH_SHORT).show();
+        }else{
         lostdb.child("users").child(registerNum).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -293,14 +363,63 @@ public class LostForm extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
-        intcall();
+        intcall();}
+        matchItemsBag(selectedValue,brandname,datelost,selectedBag,colorname,uniquefeature);
     }
 
-        private void postToDBpurse(String registerNum){
-            brandname = brandNameEditText.getText().toString();
-            colorname = colorEditText.getText().toString();
-            uniquefeature = uniqueEditText.getText().toString();
-            datelost = dateOfLostEditText.getText().toString();
+    private void matchItemsBag(String selectedValue, String brandname, String datelost, String selectedBag, String colorname, String uniquefeature) {
+        compareRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot registerSnapshot : snapshot.getChildren()){
+                    String registerid = registerSnapshot.getKey();
+                    // Log.d("for1",registerid);
+                    boolean found = registerSnapshot.hasChild("found");
+                    if (found) {
+                        //Log.d("Boolean","True");
+                        for (DataSnapshot foundSnapshot : registerSnapshot.child("found").getChildren()) {
+                            String itemName = foundSnapshot.getKey();
+                            //Log.d("for2", itemName);
+                            if (itemName.equals(selectedValue)) {
+                                // Log.d("item","equals");
+                                String BRAND = foundSnapshot.child("Brand Name").getValue(String.class);
+                                String COLOR = foundSnapshot.child("Color").getValue(String.class);
+                                String UNIQUE =foundSnapshot.child("Uniqueness").getValue(String.class);
+                                String PLACE = foundSnapshot.child("Location").getValue(String.class);
+                                String DATE = foundSnapshot.child("Date").getValue(String.class);
+                                String BAG = foundSnapshot.child("Bag Type").getValue(String.class);
+
+                                if (BRAND.equals(brandname)
+                                        && COLOR.equals(colorname) && UNIQUE.equals(uniquefeature)
+                                        && PLACE.equals(selectedplace) && BAG.equals(selectedBag)
+                                        && DATE.equals(datelost)){
+                                    Log.d("item", "found");
+                                } else {
+                                    Log.d("item", "not found");
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void postToDBpurse(String registerNum){
+            brandname = brandNameEditText.getText().toString().toLowerCase().trim();
+            colorname = colorEditText.getText().toString().toLowerCase().trim();
+            uniquefeature = uniqueEditText.getText().toString().toLowerCase().trim();
+            datelost = dateOfLostEditText.getText().toString().toLowerCase().trim();
+        if (brandname.isEmpty()||colorname.isEmpty()||
+                uniquefeature.isEmpty()|| datelost.isEmpty() || selectedplace.isEmpty()) {
+            Toast.makeText(LostForm.this, "Enter the blank fields!", Toast.LENGTH_SHORT).show();
+        }else{
             lostdb.child("users").child(registerNum).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -314,14 +433,63 @@ public class LostForm extends AppCompatActivity {
                 public void onCancelled(@NonNull DatabaseError error) {
                 }
             });
-            intcall();
+            intcall();}
+        matchItemsPurse(selectedplace,selectedValue,colorname,brandname,datelost,uniquefeature);
         }
-        private void postToDBhead(String registerNum){
-            brandname = brandNameEditText.getText().toString();
-            modelname = modelNameEditText.getText().toString();
-            colorname = colorEditText.getText().toString();
-            uniquefeature = uniqueEditText.getText().toString();
-            datelost = dateOfLostEditText.getText().toString();
+
+    private void matchItemsPurse(String selectedplace, String selectedValue, String colorname, String brandname, String datelost, String uniquefeature) {
+        compareRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot registerSnapshot : snapshot.getChildren()){
+                    String registerid = registerSnapshot.getKey();
+                    // Log.d("for1",registerid);
+                    boolean found = registerSnapshot.hasChild("found");
+                    if (found) {
+                        //Log.d("Boolean","True");
+                        for (DataSnapshot foundSnapshot : registerSnapshot.child("found").getChildren()) {
+                            String itemName = foundSnapshot.getKey();
+                            //Log.d("for2", itemName);
+                            if (itemName.equals(selectedValue)) {
+                                // Log.d("item","equals");
+                                String BRAND = foundSnapshot.child("Brand Name").getValue(String.class);
+                                String COLOR = foundSnapshot.child("Color").getValue(String.class);
+                                String UNIQUE =foundSnapshot.child("Uniqueness").getValue(String.class);
+                                String PLACE = foundSnapshot.child("Location").getValue(String.class);
+                                String DATE = foundSnapshot.child("Date").getValue(String.class);
+
+                                if (BRAND.equals(brandname)
+                                        && COLOR.equals(colorname) && UNIQUE.equals(uniquefeature)
+                                        && PLACE.equals(selectedplace)
+                                        && DATE.equals(datelost)){
+                                    Log.d("item", "found");
+                                } else {
+                                    Log.d("item", "not found");
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void postToDBhead(String registerNum){
+            brandname = brandNameEditText.getText().toString().toLowerCase().trim();
+            modelname = modelNameEditText.getText().toString().toLowerCase().trim();
+            colorname = colorEditText.getText().toString().toLowerCase().trim();
+            uniquefeature = uniqueEditText.getText().toString().toLowerCase().trim();
+            datelost = dateOfLostEditText.getText().toString().toLowerCase().trim();
+            if (brandname.isEmpty()||modelname.isEmpty()||colorname.isEmpty()||
+                    uniquefeature.isEmpty()|| datelost.isEmpty() || selectedplace.isEmpty()||selectedheadphone.isEmpty()) {
+                Toast.makeText(LostForm.this, "Enter the blank fields!", Toast.LENGTH_SHORT).show();
+            }else{
             lostdb.child("users").child(registerNum).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -337,9 +505,108 @@ public class LostForm extends AppCompatActivity {
                 public void onCancelled(@NonNull DatabaseError error) {
                 }
             });
-            intcall();
+            intcall();}
+            matchItemsHeadphone(selectedValue,brandname,modelname,colorname,uniquefeature,datelost,selectedheadphone,selectedplace);
         }
-        private void intcall(){
+
+    private void matchItemsHeadphone(String selectedValue, String brandname, String modelname, String colorname, String uniquefeature, String datelost, String selectedheadphone, String selectedplace) {
+        compareRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot registerSnapshot : snapshot.getChildren()){
+                    String registerid = registerSnapshot.getKey();
+                    // Log.d("for1",registerid);
+                    boolean found = registerSnapshot.hasChild("found");
+                    if (found) {
+                        //Log.d("Boolean","True");
+                        for (DataSnapshot foundSnapshot : registerSnapshot.child("found").getChildren()) {
+                            String itemName = foundSnapshot.getKey();
+                            //Log.d("for2", itemName);
+                            if (itemName.equals(selectedValue)) {
+                                // Log.d("item","equals");
+                                String BRAND = foundSnapshot.child("Brand Name").getValue(String.class);
+                                String MODEL = foundSnapshot.child("Model Name").getValue(String.class);
+                                String COLOR = foundSnapshot.child("Color").getValue(String.class);
+                                String UNIQUE =foundSnapshot.child("Uniqueness").getValue(String.class);
+                                String PLACE = foundSnapshot.child("Location").getValue(String.class);
+                                String DATE = foundSnapshot.child("Date").getValue(String.class);
+                                String HEAD = foundSnapshot.child("Headphone Type").getValue(String.class);
+
+                                if (BRAND.equals(brandname) && MODEL.equals(modelname)
+                                        && COLOR.equals(colorname) && UNIQUE.equals(uniquefeature)
+                                        && PLACE.equals(selectedplace) && HEAD.equals(selectedheadphone)
+                                        && DATE.equals(datelost)){
+                                    Log.d("item", "found");
+                                } else {
+                                    Log.d("item", "not found");
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void matchItemsPhone(String selectedValue, String brandname,String modelname, String imeinum,
+                                 String colorname,String uniquefeature, String datelost,
+                                 String selectedplace) {
+        //Log.d("inside method","yes");
+        compareRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot registerSnapshot : snapshot.getChildren()){
+                    String registerid = registerSnapshot.getKey();
+                   // Log.d("for1",registerid);
+                    boolean found = registerSnapshot.hasChild("found");
+                    if (found) {
+                        //Log.d("Boolean","True");
+                        for (DataSnapshot foundSnapshot : registerSnapshot.child("found").getChildren()) {
+                            String itemName = foundSnapshot.getKey();
+                            //Log.d("for2", itemName);
+                            if (itemName.equals(selectedValue)) {
+                               // Log.d("item","equals");
+                                        String BRAND = foundSnapshot.child("Brand Name").getValue(String.class);
+                                        String MODEL = foundSnapshot.child("Model Name").getValue(String.class);
+                                        String COLOR = foundSnapshot.child("Color").getValue(String.class);
+                                        String UNIQUE =foundSnapshot.child("Uniqueness").getValue(String.class);
+                                        String PLACE = foundSnapshot.child("Location").getValue(String.class);
+                                        String DATE = foundSnapshot.child("Date").getValue(String.class);
+                                        String IMEI = foundSnapshot.child("IMEI Number").getValue(String.class);
+
+                                        if (BRAND.equals(brandname) && MODEL.equals(modelname)
+                                                && COLOR.equals(colorname) && UNIQUE.equals(uniquefeature)
+                                                && PLACE.equals(selectedplace) && IMEI.equals(imeinum)
+                                                && DATE.equals(datelost)){
+                                            Log.d("item", "found");
+                                        } else {
+                                            Log.d("item", "not found");
+                                        }
+
+
+
+
+                            }
+
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void intcall(){
             Intent tosuccess = new Intent(LostForm.this, SuccessfulPost.class);
             startActivity(tosuccess);
         }

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -20,16 +21,25 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.loginmodule.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.util.UUID;
 
 public class FoundForm extends AppCompatActivity {
 
     private LinearLayout fllc;
-    private String fselectedValue, fselectedheadphone, fselectedWatch, fselectedplace, fselectedBag;
+    private String fselectedValue, fselectedheadphone, fselectedWatch, fselectedplace, fselectedBag, imageURL;
     private EditText fbrandNameEditText, fmodelNameEditText, fimeiEditText, fcolorEditText, funiqueEditText, fdateOfLostEditText;
     private Button fImage,fPostphone, fPostwatch, fPostbag, fPostpurse, fPosthead;
     private ImageView fimageview;
@@ -37,7 +47,10 @@ public class FoundForm extends AppCompatActivity {
     private Spinner fspinHead,fspinWatch, fspinPlace, ftypeOfBag;
     private SharedPreferences fcachefromlogin;
     private DatabaseReference founddb;
+    private Uri imageUri;
     public static String fbrandname, fmodelname, fimeinum, fcolorname, funiquefeature, fvaluabledetails, fdatelost;
+    private FirebaseStorage fbStorage;
+    private StorageReference storageRef;
 
 
     @Override
@@ -47,6 +60,8 @@ public class FoundForm extends AppCompatActivity {
 
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         founddb = FirebaseDatabase.getInstance().getReference();
+        fbStorage = FirebaseStorage.getInstance();
+        storageRef = fbStorage.getReference();
         // Initialize layout elements after setting the content view
         fllc = findViewById(R.id.flinearLayoutContainer);
         fbrandNameEditText = findViewById(R.id.fBrand);
@@ -259,10 +274,47 @@ public class FoundForm extends AppCompatActivity {
 
         if (requestCode == fPICK_IMAGE_REQUEST && resultCode == RESULT_OK
                 && data != null && data.getData() != null) {
-            Uri imageUri = data.getData();
+            imageUri = data.getData();
             fimageview.setVisibility(View.VISIBLE);
             fimageview.setImageURI(imageUri);
+            uploadPicture();
         }
+    }
+
+    private void uploadPicture() {
+        final ProgressDialog pdBox = new  ProgressDialog(this);
+        pdBox.setTitle("Uploading Image.....");
+        pdBox.show();
+        final String randomKey = UUID.randomUUID().toString();
+        StorageReference riversRef = storageRef.child("images/"+randomKey);
+        riversRef.putFile(imageUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot skSnapshot) {
+                        pdBox.dismiss();
+                        riversRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                imageURL = uri.toString();
+                            }
+                        });
+                        Snackbar.make(findViewById(android.R.id.content),"Image Uploaded",Snackbar.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        pdBox.dismiss();
+                        Toast.makeText(getApplicationContext(),"Failed to upload :(",Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                        double progressPercent = (100.00 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
+                        pdBox.setMessage("Progress:" + (int) progressPercent + "%");
+                    }
+                });
     }
 
     private void fpostToDBphone(String fregisterNumber){
@@ -272,6 +324,11 @@ public class FoundForm extends AppCompatActivity {
         fcolorname = fcolorEditText.getText().toString();
         funiquefeature = funiqueEditText.getText().toString();
         fdatelost = fdateOfLostEditText.getText().toString();
+
+        if (fbrandname.isEmpty() || fmodelname.isEmpty() || fimeinum.isEmpty() || fcolorname.isEmpty() ||
+                funiquefeature.isEmpty() || fdatelost.isEmpty() || fselectedplace.isEmpty() || fimageview.getDrawable() == null){
+            Toast.makeText(FoundForm.this, "Enter the blank fields! ", Toast.LENGTH_SHORT).show();
+        }else{
         founddb.child("users").child(fregisterNumber).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -283,13 +340,14 @@ public class FoundForm extends AppCompatActivity {
                 fref.child("Uniqueness").setValue(funiquefeature);
                 fref.child("Date").setValue(fdatelost);
                 fref.child("Location").setValue(fselectedplace);
+                fref.child("Image URL").setValue(imageURL);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
 
-        fintcall();
+        fintcall();}
     }
     private void fpostToDBwatch(String registerNum){
         fbrandname = fbrandNameEditText.getText().toString();
@@ -297,22 +355,28 @@ public class FoundForm extends AppCompatActivity {
         fcolorname = fcolorEditText.getText().toString();
         funiquefeature = funiqueEditText.getText().toString();
         fdatelost = fdateOfLostEditText.getText().toString();
+
+        if (fbrandname.isEmpty() || fmodelname.isEmpty() || fcolorname.isEmpty() || fselectedplace.isEmpty() ||
+                funiquefeature.isEmpty() || fdatelost.isEmpty() || fselectedWatch.isEmpty() || fimageview.getDrawable() == null){
+            Toast.makeText(FoundForm.this, "Enter the blank fields! ", Toast.LENGTH_SHORT).show();
+        }else{
         founddb.child("users").child(registerNum).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                DatabaseReference ref = founddb.child("users").child(registerNum).child("lost").child(fselectedValue);
-                ref.child("Brand Name").setValue(fbrandname);
-                ref.child("Model Name").setValue(fmodelname);
-                ref.child("Color").setValue(fcolorname);
-                ref.child("Uniqueness").setValue(funiquefeature);
-                ref.child("Date").setValue(fdatelost);
-                ref.child("Watch Type").setValue(fselectedWatch);
-                ref.child("Location").setValue(fselectedplace);
+                DatabaseReference fref = founddb.child("users").child(registerNum).child("found").child(fselectedValue);
+                fref.child("Brand Name").setValue(fbrandname);
+                fref.child("Model Name").setValue(fmodelname);
+                fref.child("Color").setValue(fcolorname);
+                fref.child("Uniqueness").setValue(funiquefeature);
+                fref.child("Date").setValue(fdatelost);
+                fref.child("Watch Type").setValue(fselectedWatch);
+                fref.child("Location").setValue(fselectedplace);
+                fref.child("Image URL").setValue(imageURL);
             }
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
-        fintcall();
+        fintcall();}
     }
     private void fpostToDBbag(String registerNum){
         fbrandname = fbrandNameEditText.getText().toString();
@@ -320,22 +384,30 @@ public class FoundForm extends AppCompatActivity {
         fcolorname = fcolorEditText.getText().toString();
         funiquefeature = funiqueEditText.getText().toString();
         fdatelost = fdateOfLostEditText.getText().toString();
+
+        if (fbrandname.isEmpty() || fmodelname.isEmpty() || fcolorname.isEmpty() || funiquefeature.isEmpty() ||
+                fdatelost.isEmpty() || fselectedplace.isEmpty() || fselectedBag.isEmpty()|| fimageview.getDrawable() == null){
+            Toast.makeText(FoundForm.this, "Enter the blank fields! ", Toast.LENGTH_SHORT).show();
+        }
+        else{
         founddb.child("users").child(registerNum).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                DatabaseReference ref = founddb.child("users").child(registerNum).child("lost").child(fselectedValue);
-                ref.child("Brand Name").setValue(fbrandname);
-                ref.child("Model Name").setValue(fmodelname);
-                ref.child("Color").setValue(fcolorname);
-                ref.child("Uniqueness").setValue(funiquefeature);
-                ref.child("Date").setValue(fdatelost);
-                ref.child("Bag Type").setValue(fselectedBag);
-                ref.child("Location").setValue(fselectedplace);
+                DatabaseReference fref = founddb.child("users").child(registerNum).child("found").child(fselectedValue);
+                fref.child("Brand Name").setValue(fbrandname);
+                fref.child("Model Name").setValue(fmodelname);
+                fref.child("Color").setValue(fcolorname);
+                fref.child("Uniqueness").setValue(funiquefeature);
+                fref.child("Date").setValue(fdatelost);
+                fref.child("Bag Type").setValue(fselectedBag);
+                fref.child("Location").setValue(fselectedplace);
+                fref.child("Image URL").setValue(imageURL);
             }
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
-        fintcall();
+            fintcall();}
+
     }
 
     private void fpostToDBpurse(String registerNum){
@@ -343,20 +415,27 @@ public class FoundForm extends AppCompatActivity {
         fcolorname = fcolorEditText.getText().toString();
         funiquefeature = funiqueEditText.getText().toString();
         fdatelost = fdateOfLostEditText.getText().toString();
+
+        if (fbrandname.isEmpty() || fcolorname.isEmpty() ||
+                funiquefeature.isEmpty() || fdatelost.isEmpty() || fselectedplace.isEmpty() || fimageview.getDrawable() == null){
+            Toast.makeText(FoundForm.this, "Enter the blank fields! ", Toast.LENGTH_SHORT).show();
+        }else{
         founddb.child("users").child(registerNum).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                DatabaseReference ref = founddb.child("users").child(registerNum).child("lost").child(fselectedValue);
-                ref.child("Brand Name").setValue(fbrandname);
-                ref.child("Color").setValue(fcolorname);
-                ref.child("Uniqueness").setValue(funiquefeature);
-                ref.child("Date").setValue(fdatelost);
-                ref.child("Location").setValue(fselectedplace);
+                DatabaseReference fref = founddb.child("users").child(registerNum).child("found").child(fselectedValue);
+                fref.child("Brand Name").setValue(fbrandname);
+                fref.child("Color").setValue(fcolorname);
+                fref.child("Uniqueness").setValue(funiquefeature);
+                fref.child("Date").setValue(fdatelost);
+                fref.child("Location").setValue(fselectedplace);
+                fref.child("Image URL").setValue(imageURL);
             }
+
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
-        fintcall();
+        fintcall();}
     }
     private void fpostToDBhead(String registerNum){
         fbrandname = fbrandNameEditText.getText().toString();
@@ -364,22 +443,27 @@ public class FoundForm extends AppCompatActivity {
         fcolorname = fcolorEditText.getText().toString();
         funiquefeature = funiqueEditText.getText().toString();
         fdatelost = fdateOfLostEditText.getText().toString();
+
+        if (fbrandname.isEmpty() || fmodelname.isEmpty() || fcolorname.isEmpty() ||
+                funiquefeature.isEmpty() || fdatelost.isEmpty() || fselectedplace.isEmpty() || fselectedheadphone.isEmpty() || fimageview.getDrawable() == null){
+            Toast.makeText(FoundForm.this, "Enter the blank fields! ", Toast.LENGTH_SHORT).show();
+        }else{
         founddb.child("users").child(registerNum).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                DatabaseReference ref = founddb.child("users").child(registerNum).child("lost").child(fselectedValue);
-                ref.child("Brand Name").setValue(fbrandname);
-                ref.child("Model Name").setValue(fmodelname);
-                ref.child("Color").setValue(fcolorname);
-                ref.child("Uniqueness").setValue(funiquefeature);
-                ref.child("Date").setValue(fdatelost);
-                ref.child("Headphone Type").setValue(fselectedheadphone);
-                ref.child("Location").setValue(fselectedplace);
+                DatabaseReference fref = founddb.child("users").child(registerNum).child("found").child(fselectedValue);
+                fref.child("Brand Name").setValue(fbrandname);
+                fref.child("Model Name").setValue(fmodelname);
+                fref.child("Color").setValue(fcolorname);
+                fref.child("Uniqueness").setValue(funiquefeature);
+                fref.child("Date").setValue(fdatelost);
+                fref.child("Headphone Type").setValue(fselectedheadphone);
+                fref.child("Location").setValue(fselectedplace);
             }
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
-        fintcall();
+        fintcall();}
     }
     private void fintcall(){
         Intent tosuccesspost = new Intent(FoundForm.this, SuccessfulPost.class);
