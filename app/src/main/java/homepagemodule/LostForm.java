@@ -33,6 +33,7 @@ public class LostForm extends AppCompatActivity {
     private Spinner spinHead, spinWatch, spinPlace, typeOfBag;
     private DatabaseReference lostdb, compareRef;
     private SharedPreferences cachefromlogin;
+    private String emailIdOfThisUser;
     public static String brandname, modelname, imeinum, colorname, uniquefeature, datelost;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -585,13 +586,21 @@ public class LostForm extends AppCompatActivity {
                                                 && PLACE.equals(selectedplace) && IMEI.equals(imeinum)
                                                 && DATE.equals(datelost)){
                                             Log.d("item", "found");
+                                            String foundPersonRegId = registerSnapshot.getKey();
+                                            Log.d("Reg",foundPersonRegId);
+                                            String foundPersonEmail = registerSnapshot.child("email").getValue(String.class);
+                                            Log.d("email",foundPersonEmail);
+                                            String foundPersonDept = registerSnapshot.child("department").getValue(String.class);
+                                            Log.d("dept",foundPersonDept);
+                                            String foundPersonSec = registerSnapshot.child("section").getValue(String.class);
+                                            Log.d("sec",foundPersonSec);
+                                            String foundImageLink = foundSnapshot.child("Imageurl").getValue(String.class);
+                                            Log.d("link",foundImageLink);
+
+                                            sendEmailFound(foundPersonRegId,foundPersonEmail,foundPersonDept,foundPersonSec,foundImageLink);
                                         } else {
                                             Log.d("item", "not found");
                                         }
-
-
-
-
                             }
 
                         }
@@ -604,6 +613,19 @@ public class LostForm extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void sendEmailFound(String foundPersonRegId,
+                                String foundPersonEmail,
+                                String foundPersonDept,
+                                String foundPersonSec,
+                                String foundImageLink) {
+        String Subject = "LostAndFound";
+        String Message = "Hello, from lost and found. I have found the thing you've lost. See below for the founded person details:\nRegister ID: "+
+                foundPersonRegId+"\nDepartment: "+foundPersonDept+"\nSection: "+foundPersonSec+"\nEmail: "+foundPersonEmail+
+                "\nImage Link: "+foundImageLink;
+        JavaMailAPI javaMailAPI = new JavaMailAPI(this, foundPersonEmail, Subject, Message);
+        javaMailAPI.execute();
     }
 
     private void intcall(){

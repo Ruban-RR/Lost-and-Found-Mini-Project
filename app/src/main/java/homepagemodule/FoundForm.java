@@ -340,7 +340,7 @@ public class FoundForm extends AppCompatActivity {
                 fref.child("Uniqueness").setValue(funiquefeature);
                 fref.child("Date").setValue(fdatelost);
                 fref.child("Location").setValue(fselectedplace);
-                fref.child("Image URL").setValue(imageURL);
+                fref.child("Imageurl").setValue(imageURL);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -371,7 +371,7 @@ public class FoundForm extends AppCompatActivity {
                 fref.child("Date").setValue(fdatelost);
                 fref.child("Watch Type").setValue(fselectedWatch);
                 fref.child("Location").setValue(fselectedplace);
-                fref.child("Image URL").setValue(imageURL);
+                fref.child("Imageurl").setValue(imageURL);
             }
             public void onCancelled(@NonNull DatabaseError error) {
             }
@@ -401,7 +401,7 @@ public class FoundForm extends AppCompatActivity {
                 fref.child("Date").setValue(fdatelost);
                 fref.child("Bag Type").setValue(fselectedBag);
                 fref.child("Location").setValue(fselectedplace);
-                fref.child("Image URL").setValue(imageURL);
+                fref.child("Imageurl").setValue(imageURL);
             }
             public void onCancelled(@NonNull DatabaseError error) {
             }
@@ -429,7 +429,7 @@ public class FoundForm extends AppCompatActivity {
                 fref.child("Uniqueness").setValue(funiquefeature);
                 fref.child("Date").setValue(fdatelost);
                 fref.child("Location").setValue(fselectedplace);
-                fref.child("Image URL").setValue(imageURL);
+                fref.child("Imageurl").setValue(imageURL);
             }
 
             public void onCancelled(@NonNull DatabaseError error) {
@@ -459,6 +459,7 @@ public class FoundForm extends AppCompatActivity {
                 fref.child("Date").setValue(fdatelost);
                 fref.child("Headphone Type").setValue(fselectedheadphone);
                 fref.child("Location").setValue(fselectedplace);
+                fref.child("Imageurl").setValue(imageURL);
             }
             public void onCancelled(@NonNull DatabaseError error) {
             }
