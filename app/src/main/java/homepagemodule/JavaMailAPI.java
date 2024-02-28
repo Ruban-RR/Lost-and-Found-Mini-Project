@@ -2,6 +2,7 @@ package homepagemodule;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.util.Properties;
 
@@ -23,6 +24,7 @@ public class JavaMailAPI extends AsyncTask<Void,Void,Void> {
         this.email = email;
         this.subject = subject;
         this.message = message;
+        Log.d("Indise Javamailapi const",email);
     }
 
     @Override
@@ -42,6 +44,7 @@ public class JavaMailAPI extends AsyncTask<Void,Void,Void> {
         MimeMessage mimeMessage = new MimeMessage(session);
         try {
             mimeMessage.setFrom(new InternetAddress(Utils.EMAIL));
+            Log.d("before parse email",email);
             mimeMessage.addRecipients(Message.RecipientType.TO,InternetAddress.parse(email));
             mimeMessage.setSubject(subject);
             mimeMessage.setText(message);
