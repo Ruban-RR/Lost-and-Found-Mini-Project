@@ -58,6 +58,7 @@ public class HomePage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent lostB = new Intent(HomePage.this, LostForm.class);
+                lostB.putExtra("MyAccountActivity",getIntent().getStringExtra("MyAccountActivity"));
                 startActivity(lostB);
             }
         });
@@ -66,11 +67,10 @@ public class HomePage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent foundB = new Intent(HomePage.this, FoundForm.class);
+                foundB.putExtra("MyAccountActivity",getIntent().getStringExtra("MyAccountActivity"));
                 startActivity(foundB);
             }
         });
-
-
     }
     public void onBackPressedDispatcher(){
         getOnBackPressedDispatcher().onBackPressed();

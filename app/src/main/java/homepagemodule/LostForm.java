@@ -24,16 +24,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import javax.security.auth.Subject;
+
 public class LostForm extends AppCompatActivity {
-    private String selectedValue,selectedplace,selectedheadphone,selectedWatch, selectedBag;
+    private String selectedValue,selectedplace,selectedheadphone,selectedWatch, selectedBag, lostPersonEmail;
     private LinearLayout llc;
     private EditText brandNameEditText, modelNameEditText, imeiEditText, colorEditText, uniqueEditText, dateOfLostEditText;
     private Button  Postphone, Postwatch, Postbag, Postpurse, Posthead ;
     private Spinner spinHead, spinWatch, spinPlace, typeOfBag;
     private DatabaseReference lostdb, compareRef;
-    private SharedPreferences cachefromlogin;
-    private String emailLoster,emailLoster2,emailLoster3,emailloster4, emailLoster5;
     public static String brandname, modelname, imeinum, colorname, uniquefeature, datelost;
+    private SharedPreferences cachefromlogin,cacheForLostFromLogin, cacheForLostFromCreateAccount;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +44,14 @@ public class LostForm extends AppCompatActivity {
         lostdb = FirebaseDatabase.getInstance().getReference();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         compareRef = database.getReference("users");
-
+        String fromLoginOrCreateAccount = getIntent().getStringExtra("MyAccountActivity");
+        if(fromLoginOrCreateAccount.equals("LoginActivity")||fromLoginOrCreateAccount.equals(" ")) {
+            cacheForLostFromLogin = getSharedPreferences("MyPreferencesFromLogin", MODE_PRIVATE);
+            lostPersonEmail = cacheForLostFromLogin.getString("emailfromlogin","");
+        }else{
+            cacheForLostFromCreateAccount = getSharedPreferences("MyPreferencesFromCreateAccount",MODE_PRIVATE);
+            lostPersonEmail = cacheForLostFromCreateAccount.getString("cacheEmail","");
+        }
         // Initialize layout elements after setting the content view
         llc = findViewById(R.id.linearLayoutContainer);
         brandNameEditText = findViewById(R.id.Brand);
@@ -252,7 +260,6 @@ public class LostForm extends AppCompatActivity {
                     ref.child("Uniqueness").setValue(uniquefeature);
                     ref.child("Date").setValue(datelost);
                     ref.child("Location").setValue(selectedplace);
-                    emailLoster = snapshot.child("email").getValue(String.class);
                 }
                 public void onCancelled(@NonNull DatabaseError error) {
                 }
@@ -261,7 +268,7 @@ public class LostForm extends AppCompatActivity {
             }
             Log.d("before method call","yes");
             matchItemsPhone(selectedValue,brandname,modelname,imeinum,colorname,
-                    uniquefeature, datelost,selectedplace,emailLoster);
+                    uniquefeature, datelost,selectedplace);
 
         }
         private void postToDBwatch(String registerNum){
@@ -285,16 +292,15 @@ public class LostForm extends AppCompatActivity {
                     ref2.child("Date").setValue(datelost);
                     ref2.child("Watch Type").setValue(selectedWatch);
                     ref2.child("Location").setValue(selectedplace);
-                    emailLoster2 = snapshot.child("email").getValue(String.class);
                 }
                 public void onCancelled(@NonNull DatabaseError error) {
                 }
             });
             intcall();}
-            matchItemsWatch(selectedValue,brandname,modelname,colorname,uniquefeature,datelost,selectedplace,selectedWatch,emailLoster2);
+            matchItemsWatch(selectedValue,brandname,modelname,colorname,uniquefeature,datelost,selectedplace,selectedWatch);
         }
 
-    private void matchItemsWatch(String selectedValue,String brandname, String modelname, String colorname, String uniquefeature, String datelost, String selectedplace, String selectedWatch, String emailLoster2) {
+    private void matchItemsWatch(String selectedValue,String brandname, String modelname, String colorname, String uniquefeature, String datelost, String selectedplace, String selectedWatch) {
         compareRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -327,7 +333,7 @@ public class LostForm extends AppCompatActivity {
                                     String foundPersonSec = registerSnapshot.child("section").getValue(String.class);
                                     String foundImageLink = foundSnapshot.child("Imageurl").getValue(String.class);
 
-                                    sendEmailFound(foundPersonRegId,foundPersonEmail,foundPersonDept,foundPersonSec,foundImageLink,emailLoster2);
+                                    sendEmailFound(foundPersonRegId,foundPersonEmail,foundPersonDept,foundPersonSec,foundImageLink,lostPersonEmail);
                                     Log.d("item", "found");
                                 } else {
                                     Log.d("item", "not found");
@@ -368,16 +374,16 @@ public class LostForm extends AppCompatActivity {
                 ref3.child("Date").setValue(datelost);
                 ref3.child("Bag Type").setValue(selectedBag);
                 ref3.child("Location").setValue(selectedplace);
-                emailLoster3 = snapshot.child("email").getValue(String.class);
+
             }
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
         intcall();}
-        matchItemsBag(selectedValue,brandname,datelost,selectedBag,colorname,uniquefeature,emailLoster3);
+        matchItemsBag(selectedValue,brandname,datelost,selectedBag,colorname,uniquefeature);
     }
 
-    private void matchItemsBag(String selectedValue, String brandname, String datelost, String selectedBag, String colorname, String uniquefeature, String emailLoster3) {
+    private void matchItemsBag(String selectedValue, String brandname, String datelost, String selectedBag, String colorname, String uniquefeature) {
         compareRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -409,7 +415,7 @@ public class LostForm extends AppCompatActivity {
                                     String foundPersonSec = registerSnapshot.child("section").getValue(String.class);
                                     String foundImageLink = foundSnapshot.child("Imageurl").getValue(String.class);
 
-                                    sendEmailFound(foundPersonRegId,foundPersonEmail,foundPersonDept,foundPersonSec,foundImageLink,emailLoster3);
+                                    sendEmailFound(foundPersonRegId,foundPersonEmail,foundPersonDept,foundPersonSec,foundImageLink,lostPersonEmail);
                                     Log.d("item", "found");
                                 } else {
                                     Log.d("item", "not found");
@@ -446,16 +452,15 @@ public class LostForm extends AppCompatActivity {
                     ref4.child("Uniqueness").setValue(uniquefeature);
                     ref4.child("Date").setValue(datelost);
                     ref4.child("Location").setValue(selectedplace);
-                    emailloster4 = snapshot.child("email").getValue(String.class);
                 }
                 public void onCancelled(@NonNull DatabaseError error) {
                 }
             });
             intcall();}
-        matchItemsPurse(selectedplace,selectedValue,colorname,brandname,datelost,uniquefeature,emailloster4);
+        matchItemsPurse(selectedplace,selectedValue,colorname,brandname,datelost,uniquefeature);
         }
 
-    private void matchItemsPurse(String selectedplace, String selectedValue, String colorname, String brandname, String datelost, String uniquefeature, String emailloster4) {
+    private void matchItemsPurse(String selectedplace, String selectedValue, String colorname, String brandname, String datelost, String uniquefeature) {
         compareRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -486,7 +491,7 @@ public class LostForm extends AppCompatActivity {
                                     String foundPersonSec = registerSnapshot.child("section").getValue(String.class);
                                     String foundImageLink = foundSnapshot.child("Imageurl").getValue(String.class);
 
-                                    sendEmailFound(foundPersonRegId,foundPersonEmail,foundPersonDept,foundPersonSec,foundImageLink,emailLoster);
+                                    sendEmailFound(foundPersonRegId,foundPersonEmail,foundPersonDept,foundPersonSec,foundImageLink,lostPersonEmail);
                                     Log.d("item", "found");
                                 } else {
                                     Log.d("item", "not found");
@@ -526,17 +531,16 @@ public class LostForm extends AppCompatActivity {
                     ref.child("Date").setValue(datelost);
                     ref.child("Headphone Type").setValue(selectedheadphone);
                     ref.child("Location").setValue(selectedplace);
-                    emailLoster5 = snapshot.child("email").getValue(String.class);
                 }
                 public void onCancelled(@NonNull DatabaseError error) {
                 }
             });
             intcall();}
-            matchItemsHeadphone(selectedValue,brandname,modelname,colorname,uniquefeature,datelost,selectedheadphone,selectedplace,emailLoster5);
+            matchItemsHeadphone(selectedValue,brandname,modelname,colorname,uniquefeature,datelost,selectedheadphone,selectedplace);
         }
 
     private void matchItemsHeadphone(String selectedValue, String brandname, String modelname
-            , String colorname, String uniquefeature, String datelost, String selectedheadphone, String selectedplace,String emailLoster) {
+            , String colorname, String uniquefeature, String datelost, String selectedheadphone, String selectedplace) {
         compareRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -569,7 +573,7 @@ public class LostForm extends AppCompatActivity {
                                     String foundPersonSec = registerSnapshot.child("section").getValue(String.class);
                                     String foundImageLink = foundSnapshot.child("Imageurl").getValue(String.class);
 
-                                    sendEmailFound(foundPersonRegId,foundPersonEmail,foundPersonDept,foundPersonSec,foundImageLink,emailLoster5);
+                                    sendEmailFound(foundPersonRegId,foundPersonEmail,foundPersonDept,foundPersonSec,foundImageLink,lostPersonEmail);
                                     Log.d("item", "found");
                                 } else {
                                     Log.d("item", "not found");
@@ -590,7 +594,7 @@ public class LostForm extends AppCompatActivity {
 
     private void matchItemsPhone(String selectedValue, String brandname,String modelname, String imeinum,
                                  String colorname,String uniquefeature, String datelost,
-                                 String selectedplace,String emailLoster) {
+                                 String selectedplace) {
         //Log.d("inside method","yes");
         compareRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -624,7 +628,7 @@ public class LostForm extends AppCompatActivity {
                                             String foundPersonSec = registerSnapshot.child("section").getValue(String.class);
                                             String foundImageLink = foundSnapshot.child("Imageurl").getValue(String.class);
 
-                                            sendEmailFound(foundPersonRegId,foundPersonEmail,foundPersonDept,foundPersonSec,foundImageLink,emailLoster);
+                                            sendEmailFound(foundPersonRegId,foundPersonEmail,foundPersonDept,foundPersonSec,foundImageLink,lostPersonEmail);
                                         } else {
                                             sendEmailNotFound();
                                             Log.d("item", "not found");
@@ -648,6 +652,8 @@ public class LostForm extends AppCompatActivity {
         String messageNotFound = "Hello, it's from Lost and Found. Sorry to inform that it seems " +
                 "like there is no match with your lost thing details as of now! But don't lose hope you will be emailed if someone found " +
                 "your thing and post it in the application! \nThank You.";
+        JavaMailAPI javaMailAPINotFound = new JavaMailAPI(this, lostPersonEmail, subjectNotFound,messageNotFound);
+        javaMailAPINotFound.execute();
     }
 
     private void sendEmailFound(String foundPersonRegId,
@@ -655,12 +661,12 @@ public class LostForm extends AppCompatActivity {
                                 String foundPersonDept,
                                 String foundPersonSec,
                                 String foundImageLink,
-                                String emailLoster) {
+                                String lostPersonEmail) {
         String Subject = "LostAndFound";
         String Message = "Hello, it's from Lost and Found. It seems like that I have found the thing you've lost. See below for the founded person details:\nRegister ID: "+
                 foundPersonRegId+"\nDepartment: "+foundPersonDept+"\nSection: "+foundPersonSec+"\nEmail: "+foundPersonEmail+
-                "\nImage Link: "+foundImageLink;
-        JavaMailAPI javaMailAPI = new JavaMailAPI(this, emailLoster, Subject, Message);
+                "\nImage Link: "+foundImageLink+"\n\nIGNORE IF THIS IS NOT YOUR THING!!!";
+        JavaMailAPI javaMailAPI = new JavaMailAPI(this, lostPersonEmail, Subject, Message);
         javaMailAPI.execute();
     }
 

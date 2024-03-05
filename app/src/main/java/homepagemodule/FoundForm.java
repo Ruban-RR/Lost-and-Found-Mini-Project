@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -39,18 +40,19 @@ import java.util.UUID;
 public class FoundForm extends AppCompatActivity {
 
     private LinearLayout fllc;
-    private String fselectedValue, fselectedheadphone, fselectedWatch, fselectedplace, fselectedBag, imageURL;
+    private String flostPersonEmail,fselectedValue, fselectedheadphone, fselectedWatch, fselectedplace, fselectedBag, imageURL;
     private EditText fbrandNameEditText, fmodelNameEditText, fimeiEditText, fcolorEditText, funiqueEditText, fdateOfLostEditText;
     private Button fImage,fPostphone, fPostwatch, fPostbag, fPostpurse, fPosthead;
     private ImageView fimageview;
     private static final int fPICK_IMAGE_REQUEST = 1;
     private Spinner fspinHead,fspinWatch, fspinPlace, ftypeOfBag;
-    private SharedPreferences fcachefromlogin;
-    private DatabaseReference founddb;
+    private SharedPreferences fcachefromlogin, fcacheForFoundFromLogin, fcacheForFoundFromCreateAccount;
+    private DatabaseReference founddb,fcompareRef;
     private Uri imageUri;
     public static String fbrandname, fmodelname, fimeinum, fcolorname, funiquefeature, fvaluabledetails, fdatelost;
     private FirebaseStorage fbStorage;
     private StorageReference storageRef;
+    private String ffromLoginOrCreateAccount;
 
 
     @Override
@@ -62,6 +64,16 @@ public class FoundForm extends AppCompatActivity {
         founddb = FirebaseDatabase.getInstance().getReference();
         fbStorage = FirebaseStorage.getInstance();
         storageRef = fbStorage.getReference();
+        FirebaseDatabase fdatabase = FirebaseDatabase.getInstance();
+        fcompareRef = fdatabase.getReference("users");
+        ffromLoginOrCreateAccount = getIntent().getStringExtra("MyAccountActivity");
+        if(ffromLoginOrCreateAccount.equals("LoginActivity")||ffromLoginOrCreateAccount.equals(" ")) {
+            fcacheForFoundFromLogin = getSharedPreferences("MyPreferencesFromLogin", MODE_PRIVATE);
+            flostPersonEmail = fcacheForFoundFromLogin.getString("emailfromlogin","");
+        }else{
+            fcacheForFoundFromCreateAccount = getSharedPreferences("MyPreferencesFromCreateAccount",MODE_PRIVATE);
+            flostPersonEmail = fcacheForFoundFromCreateAccount.getString("cacheEmail","");
+        }
         // Initialize layout elements after setting the content view
         fllc = findViewById(R.id.flinearLayoutContainer);
         fbrandNameEditText = findViewById(R.id.fBrand);
@@ -348,127 +360,215 @@ public class FoundForm extends AppCompatActivity {
         });
 
         fintcall();}
+        Log.d("before post to db","pass");
+        fmatchItemsPhone(fbrandname,fmodelname,fimeinum,fcolorname,funiquefeature,fdatelost,fselectedplace);
     }
-    private void fpostToDBwatch(String registerNum){
-        fbrandname = fbrandNameEditText.getText().toString();
-        fmodelname = fmodelNameEditText.getText().toString();
-        fcolorname = fcolorEditText.getText().toString();
-        funiquefeature = funiqueEditText.getText().toString();
-        fdatelost = fdateOfLostEditText.getText().toString();
 
-        if (fbrandname.isEmpty() || fmodelname.isEmpty() || fcolorname.isEmpty() || fselectedplace.isEmpty() ||
-                funiquefeature.isEmpty() || fdatelost.isEmpty() || fselectedWatch.isEmpty() || fimageview.getDrawable() == null){
-            Toast.makeText(FoundForm.this, "Enter the blank fields! ", Toast.LENGTH_SHORT).show();
-        }else{
-        founddb.child("users").child(registerNum).addListenerForSingleValueEvent(new ValueEventListener() {
+    private void fmatchItemsPhone(String fbrandname, String fmodelname, String fimeinum, String fcolorname, String funiquefeature, String fdatelost, String fselectedplace) {
+        fcompareRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                DatabaseReference fref = founddb.child("users").child(registerNum).child("found").child(fselectedValue);
-                fref.child("Brand Name").setValue(fbrandname);
-                fref.child("Model Name").setValue(fmodelname);
-                fref.child("Color").setValue(fcolorname);
-                fref.child("Uniqueness").setValue(funiquefeature);
-                fref.child("Date").setValue(fdatelost);
-                fref.child("Watch Type").setValue(fselectedWatch);
-                fref.child("Location").setValue(fselectedplace);
-                fref.child("Imageurl").setValue(imageURL);
+                Log.d("inside match function","pass");
+                for (DataSnapshot registerSnapshot : snapshot.getChildren()) {
+                    String registerid = registerSnapshot.getKey();
+                    Log.d("for1",registerid);
+                    boolean found = registerSnapshot.hasChild("lost");
+                    if (found) {
+                        Log.d("Boolean","True");
+                        for (DataSnapshot foundSnapshot : registerSnapshot.child("lost").getChildren()) {
+                            String itemName = foundSnapshot.getKey();
+                            Log.d("for2", itemName);
+                            if (itemName.equals(fselectedValue)) {
+                                Log.d("item","equals");
+                                String fBRAND = foundSnapshot.child("Brand Name").getValue(String.class);
+                                String fMODEL = foundSnapshot.child("Model Name").getValue(String.class);
+                                String fCOLOR = foundSnapshot.child("Color").getValue(String.class);
+                                String fUNIQUE = foundSnapshot.child("Uniqueness").getValue(String.class);
+                                String fPLACE = foundSnapshot.child("Location").getValue(String.class);
+                                String fDATE = foundSnapshot.child("Date").getValue(String.class);
+                                String fIMEI = foundSnapshot.child("IMEI Number").getValue(String.class);
+
+                                if (fBRAND.equals(fbrandname) && fMODEL.equals(fmodelname)
+                                        && fCOLOR.equals(fcolorname) && fUNIQUE.equals(funiquefeature)
+                                        && fPLACE.equals(fselectedplace) && fIMEI.equals(fimeinum)
+                                        && fDATE.equals(fdatelost)) {
+                                    ffromLoginOrCreateAccount = getIntent().getStringExtra("MyAccountActivity");
+                                    if(ffromLoginOrCreateAccount.equals("LoginActivity")||ffromLoginOrCreateAccount.equals(" ")){
+
+                                        fcacheForFoundFromLogin = getSharedPreferences("MyPreferencesFromLogin", MODE_PRIVATE);
+                                    String foundPersonRegId = fcacheForFoundFromLogin.getString("useridfromlogin","");
+                                    String foundPersonEmail = fcacheForFoundFromLogin.getString("emailfromlogin","");
+                                    String foundPersonDept = fcacheForFoundFromLogin.getString("deptfromlogin","");
+                                    String foundPersonSec = fcacheForFoundFromLogin.getString("sectionfromlogin","");
+                                    String foundImageLink = foundSnapshot.child("Imageurl").getValue(String.class);
+                                    Log.d("inside if from login","pass");
+                                    String fLostEmail = registerSnapshot.child("email").getValue(String.class);
+                                    sendEmailFound(foundPersonRegId, foundPersonEmail, foundPersonDept, foundPersonSec, foundImageLink, fLostEmail);}
+                                }else{
+                                    fcacheForFoundFromCreateAccount = getSharedPreferences("MyPreferencesFromCreateAccount",MODE_PRIVATE);
+                                    String foundPersonRegId = fcacheForFoundFromCreateAccount.getString("cacheUserID","");
+                                    String foundPersonEmail = fcacheForFoundFromCreateAccount.getString("cacheEmail","");
+                                    String foundPersonDept =fcacheForFoundFromCreateAccount.getString("cacheDepartment","");
+                                    String foundPersonSec = fcacheForFoundFromCreateAccount.getString("cacheSection","");
+                                    String foundImageLink = foundSnapshot.child("Imageurl").getValue(String.class);
+                                    Log.d("inside if from createacc","pass");
+                                    String fLostEmail = registerSnapshot.child("email").getValue(String.class);
+                                    sendEmailFound(foundPersonRegId, foundPersonEmail, foundPersonDept, foundPersonSec, foundImageLink, fLostEmail);
+                                }
+                                Log.d("outside if","not pass");
+                            }
+
+                        }
+                    }
+                }
+
             }
+
+
+            @Override
             public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
-        fintcall();}
     }
-    private void fpostToDBbag(String registerNum){
-        fbrandname = fbrandNameEditText.getText().toString();
-        fmodelname = fmodelNameEditText.getText().toString();
-        fcolorname = fcolorEditText.getText().toString();
-        funiquefeature = funiqueEditText.getText().toString();
-        fdatelost = fdateOfLostEditText.getText().toString();
 
-        if (fbrandname.isEmpty() || fmodelname.isEmpty() || fcolorname.isEmpty() || funiquefeature.isEmpty() ||
-                fdatelost.isEmpty() || fselectedplace.isEmpty() || fselectedBag.isEmpty()|| fimageview.getDrawable() == null){
-            Toast.makeText(FoundForm.this, "Enter the blank fields! ", Toast.LENGTH_SHORT).show();
+
+    private void sendEmailFound(String foundPersonRegId, String foundPersonEmail, String foundPersonDept, String foundPersonSec, String foundImageLink, String flostPersonEmail) {
+        String Subject = "LostAndFound";
+        String Message = "Hello, it's from Lost and Found. It seems like that I have found the thing you've lost. See below for the founded person details:\nRegister ID: "+
+                foundPersonRegId+"\nDepartment: "+foundPersonDept+"\nSection: "+foundPersonSec+"\nEmail: "+foundPersonEmail+
+                "\nImage Link: "+foundImageLink+"\n\nIGNORE IF THIS IS NOT YOUR THING!!!";
+        JavaMailAPI fjavaMailAPI = new JavaMailAPI(this, flostPersonEmail, Subject, Message);
+        fjavaMailAPI.execute();
+
+    }
+
+    private void fpostToDBwatch (String registerNum){
+            fbrandname = fbrandNameEditText.getText().toString();
+            fmodelname = fmodelNameEditText.getText().toString();
+            fcolorname = fcolorEditText.getText().toString();
+            funiquefeature = funiqueEditText.getText().toString();
+            fdatelost = fdateOfLostEditText.getText().toString();
+
+            if (fbrandname.isEmpty() || fmodelname.isEmpty() || fcolorname.isEmpty() || fselectedplace.isEmpty() ||
+                    funiquefeature.isEmpty() || fdatelost.isEmpty() || fselectedWatch.isEmpty() || fimageview.getDrawable() == null) {
+                Toast.makeText(FoundForm.this, "Enter the blank fields! ", Toast.LENGTH_SHORT).show();
+            } else {
+                founddb.child("users").child(registerNum).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        DatabaseReference fref = founddb.child("users").child(registerNum).child("found").child(fselectedValue);
+                        fref.child("Brand Name").setValue(fbrandname);
+                        fref.child("Model Name").setValue(fmodelname);
+                        fref.child("Color").setValue(fcolorname);
+                        fref.child("Uniqueness").setValue(funiquefeature);
+                        fref.child("Date").setValue(fdatelost);
+                        fref.child("Watch Type").setValue(fselectedWatch);
+                        fref.child("Location").setValue(fselectedplace);
+                        fref.child("Imageurl").setValue(imageURL);
+                    }
+
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
+                fintcall();
+            }
         }
-        else{
-        founddb.child("users").child(registerNum).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                DatabaseReference fref = founddb.child("users").child(registerNum).child("found").child(fselectedValue);
-                fref.child("Brand Name").setValue(fbrandname);
-                fref.child("Model Name").setValue(fmodelname);
-                fref.child("Color").setValue(fcolorname);
-                fref.child("Uniqueness").setValue(funiquefeature);
-                fref.child("Date").setValue(fdatelost);
-                fref.child("Bag Type").setValue(fselectedBag);
-                fref.child("Location").setValue(fselectedplace);
-                fref.child("Imageurl").setValue(imageURL);
-            }
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-            fintcall();}
+        private void fpostToDBbag (String registerNum){
+            fbrandname = fbrandNameEditText.getText().toString();
+            fmodelname = fmodelNameEditText.getText().toString();
+            fcolorname = fcolorEditText.getText().toString();
+            funiquefeature = funiqueEditText.getText().toString();
+            fdatelost = fdateOfLostEditText.getText().toString();
 
+            if (fbrandname.isEmpty() || fmodelname.isEmpty() || fcolorname.isEmpty() || funiquefeature.isEmpty() ||
+                    fdatelost.isEmpty() || fselectedplace.isEmpty() || fselectedBag.isEmpty() || fimageview.getDrawable() == null) {
+                Toast.makeText(FoundForm.this, "Enter the blank fields! ", Toast.LENGTH_SHORT).show();
+            } else {
+                founddb.child("users").child(registerNum).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        DatabaseReference fref = founddb.child("users").child(registerNum).child("found").child(fselectedValue);
+                        fref.child("Brand Name").setValue(fbrandname);
+                        fref.child("Model Name").setValue(fmodelname);
+                        fref.child("Color").setValue(fcolorname);
+                        fref.child("Uniqueness").setValue(funiquefeature);
+                        fref.child("Date").setValue(fdatelost);
+                        fref.child("Bag Type").setValue(fselectedBag);
+                        fref.child("Location").setValue(fselectedplace);
+                        fref.child("Imageurl").setValue(imageURL);
+                    }
+
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
+                fintcall();
+            }
+
+        }
+
+        private void fpostToDBpurse (String registerNum){
+            fbrandname = fbrandNameEditText.getText().toString();
+            fcolorname = fcolorEditText.getText().toString();
+            funiquefeature = funiqueEditText.getText().toString();
+            fdatelost = fdateOfLostEditText.getText().toString();
+
+            if (fbrandname.isEmpty() || fcolorname.isEmpty() ||
+                    funiquefeature.isEmpty() || fdatelost.isEmpty() || fselectedplace.isEmpty() || fimageview.getDrawable() == null) {
+                Toast.makeText(FoundForm.this, "Enter the blank fields! ", Toast.LENGTH_SHORT).show();
+            } else {
+                founddb.child("users").child(registerNum).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        DatabaseReference fref = founddb.child("users").child(registerNum).child("found").child(fselectedValue);
+                        fref.child("Brand Name").setValue(fbrandname);
+                        fref.child("Color").setValue(fcolorname);
+                        fref.child("Uniqueness").setValue(funiquefeature);
+                        fref.child("Date").setValue(fdatelost);
+                        fref.child("Location").setValue(fselectedplace);
+                        fref.child("Imageurl").setValue(imageURL);
+                    }
+
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
+                fintcall();
+            }
+        }
+        private void fpostToDBhead (String registerNum){
+            fbrandname = fbrandNameEditText.getText().toString();
+            fmodelname = fmodelNameEditText.getText().toString();
+            fcolorname = fcolorEditText.getText().toString();
+            funiquefeature = funiqueEditText.getText().toString();
+            fdatelost = fdateOfLostEditText.getText().toString();
+
+            if (fbrandname.isEmpty() || fmodelname.isEmpty() || fcolorname.isEmpty() ||
+                    funiquefeature.isEmpty() || fdatelost.isEmpty() || fselectedplace.isEmpty() || fselectedheadphone.isEmpty() || fimageview.getDrawable() == null) {
+                Toast.makeText(FoundForm.this, "Enter the blank fields! ", Toast.LENGTH_SHORT).show();
+            } else {
+                founddb.child("users").child(registerNum).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        DatabaseReference fref = founddb.child("users").child(registerNum).child("found").child(fselectedValue);
+                        fref.child("Brand Name").setValue(fbrandname);
+                        fref.child("Model Name").setValue(fmodelname);
+                        fref.child("Color").setValue(fcolorname);
+                        fref.child("Uniqueness").setValue(funiquefeature);
+                        fref.child("Date").setValue(fdatelost);
+                        fref.child("Headphone Type").setValue(fselectedheadphone);
+                        fref.child("Location").setValue(fselectedplace);
+                        fref.child("Imageurl").setValue(imageURL);
+                    }
+
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
+                fintcall();
+            }
+        }
+        private void fintcall () {
+            Intent tosuccesspost = new Intent(FoundForm.this, SuccessfulPost.class);
+            startActivity(tosuccesspost);
+        }
     }
 
-    private void fpostToDBpurse(String registerNum){
-        fbrandname = fbrandNameEditText.getText().toString();
-        fcolorname = fcolorEditText.getText().toString();
-        funiquefeature = funiqueEditText.getText().toString();
-        fdatelost = fdateOfLostEditText.getText().toString();
-
-        if (fbrandname.isEmpty() || fcolorname.isEmpty() ||
-                funiquefeature.isEmpty() || fdatelost.isEmpty() || fselectedplace.isEmpty() || fimageview.getDrawable() == null){
-            Toast.makeText(FoundForm.this, "Enter the blank fields! ", Toast.LENGTH_SHORT).show();
-        }else{
-        founddb.child("users").child(registerNum).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                DatabaseReference fref = founddb.child("users").child(registerNum).child("found").child(fselectedValue);
-                fref.child("Brand Name").setValue(fbrandname);
-                fref.child("Color").setValue(fcolorname);
-                fref.child("Uniqueness").setValue(funiquefeature);
-                fref.child("Date").setValue(fdatelost);
-                fref.child("Location").setValue(fselectedplace);
-                fref.child("Imageurl").setValue(imageURL);
-            }
-
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-        fintcall();}
-    }
-    private void fpostToDBhead(String registerNum){
-        fbrandname = fbrandNameEditText.getText().toString();
-        fmodelname = fmodelNameEditText.getText().toString();
-        fcolorname = fcolorEditText.getText().toString();
-        funiquefeature = funiqueEditText.getText().toString();
-        fdatelost = fdateOfLostEditText.getText().toString();
-
-        if (fbrandname.isEmpty() || fmodelname.isEmpty() || fcolorname.isEmpty() ||
-                funiquefeature.isEmpty() || fdatelost.isEmpty() || fselectedplace.isEmpty() || fselectedheadphone.isEmpty() || fimageview.getDrawable() == null){
-            Toast.makeText(FoundForm.this, "Enter the blank fields! ", Toast.LENGTH_SHORT).show();
-        }else{
-        founddb.child("users").child(registerNum).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                DatabaseReference fref = founddb.child("users").child(registerNum).child("found").child(fselectedValue);
-                fref.child("Brand Name").setValue(fbrandname);
-                fref.child("Model Name").setValue(fmodelname);
-                fref.child("Color").setValue(fcolorname);
-                fref.child("Uniqueness").setValue(funiquefeature);
-                fref.child("Date").setValue(fdatelost);
-                fref.child("Headphone Type").setValue(fselectedheadphone);
-                fref.child("Location").setValue(fselectedplace);
-                fref.child("Imageurl").setValue(imageURL);
-            }
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-        fintcall();}
-    }
-    private void fintcall(){
-        Intent tosuccesspost = new Intent(FoundForm.this, SuccessfulPost.class);
-        startActivity(tosuccesspost);
-    }
-
-}
