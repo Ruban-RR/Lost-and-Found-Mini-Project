@@ -361,10 +361,13 @@ public class FoundForm extends AppCompatActivity {
 
         fintcall();}
         Log.d("before post to db","pass");
-        fmatchItemsPhone(fbrandname,fmodelname,fimeinum,fcolorname,funiquefeature,fdatelost,fselectedplace);
+        fmatchItemsPhone(fbrandname,fmodelname,fimeinum,fcolorname,
+                funiquefeature,fdatelost,fselectedplace,imageURL);
     }
 
-    private void fmatchItemsPhone(String fbrandname, String fmodelname, String fimeinum, String fcolorname, String funiquefeature, String fdatelost, String fselectedplace) {
+    private void fmatchItemsPhone(String fbrandname, String fmodelname, String fimeinum,
+                                  String fcolorname, String funiquefeature,
+                                  String fdatelost, String fselectedplace, String imageURL) {
         fcompareRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -393,38 +396,276 @@ public class FoundForm extends AppCompatActivity {
                                         && fPLACE.equals(fselectedplace) && fIMEI.equals(fimeinum)
                                         && fDATE.equals(fdatelost)) {
                                     ffromLoginOrCreateAccount = getIntent().getStringExtra("MyAccountActivity");
-                                    if(ffromLoginOrCreateAccount.equals("LoginActivity")||ffromLoginOrCreateAccount.equals(" ")){
+                                    if (ffromLoginOrCreateAccount.equals("LoginActivity") || ffromLoginOrCreateAccount.equals(" ")) {
 
                                         fcacheForFoundFromLogin = getSharedPreferences("MyPreferencesFromLogin", MODE_PRIVATE);
-                                    String foundPersonRegId = fcacheForFoundFromLogin.getString("useridfromlogin","");
-                                    String foundPersonEmail = fcacheForFoundFromLogin.getString("emailfromlogin","");
-                                    String foundPersonDept = fcacheForFoundFromLogin.getString("deptfromlogin","");
-                                    String foundPersonSec = fcacheForFoundFromLogin.getString("sectionfromlogin","");
-                                    String foundImageLink = foundSnapshot.child("Imageurl").getValue(String.class);
-                                    Log.d("inside if from login","pass");
-                                    String fLostEmail = registerSnapshot.child("email").getValue(String.class);
-                                    sendEmailFound(foundPersonRegId, foundPersonEmail, foundPersonDept, foundPersonSec, foundImageLink, fLostEmail);}
-                                }else{
-                                    fcacheForFoundFromCreateAccount = getSharedPreferences("MyPreferencesFromCreateAccount",MODE_PRIVATE);
-                                    String foundPersonRegId = fcacheForFoundFromCreateAccount.getString("cacheUserID","");
-                                    String foundPersonEmail = fcacheForFoundFromCreateAccount.getString("cacheEmail","");
-                                    String foundPersonDept =fcacheForFoundFromCreateAccount.getString("cacheDepartment","");
-                                    String foundPersonSec = fcacheForFoundFromCreateAccount.getString("cacheSection","");
-                                    String foundImageLink = foundSnapshot.child("Imageurl").getValue(String.class);
-                                    Log.d("inside if from createacc","pass");
-                                    String fLostEmail = registerSnapshot.child("email").getValue(String.class);
-                                    sendEmailFound(foundPersonRegId, foundPersonEmail, foundPersonDept, foundPersonSec, foundImageLink, fLostEmail);
+                                        String foundPersonRegId = fcacheForFoundFromLogin.getString("useridfromlogin", "");
+                                        String foundPersonEmail = fcacheForFoundFromLogin.getString("emailfromlogin", "");
+                                        String foundPersonDept = fcacheForFoundFromLogin.getString("deptfromlogin", "");
+                                        String foundPersonSec = fcacheForFoundFromLogin.getString("sectionfromlogin", "");
+                                        Log.d("inside if from login", "pass");
+                                        Log.d("image", imageURL);
+                                        String fLostEmail = registerSnapshot.child("email").getValue(String.class);
+                                        sendEmailFound(foundPersonRegId, foundPersonEmail, foundPersonDept, foundPersonSec, fLostEmail, imageURL);
+                                    }
+                                    else{
+                                        fcacheForFoundFromCreateAccount = getSharedPreferences("MyPreferencesFromCreateAccount",MODE_PRIVATE);
+                                        String foundPersonRegId = fcacheForFoundFromCreateAccount.getString("cacheUserID","");
+                                        String foundPersonEmail = fcacheForFoundFromCreateAccount.getString("cacheEmail","");
+                                        String foundPersonDept =fcacheForFoundFromCreateAccount.getString("cacheDepartment","");
+                                        String foundPersonSec = fcacheForFoundFromCreateAccount.getString("cacheSection","");
+                                        String foundImageLink = foundSnapshot.child("Imageurl").getValue(String.class);
+                                        Log.d("inside if from createacc","pass");
+                                        String fLostEmail = registerSnapshot.child("email").getValue(String.class);
+                                        sendEmailFound(foundPersonRegId, foundPersonEmail, foundPersonDept, foundPersonSec, fLostEmail,imageURL);
+                                    }
                                 }
-                                Log.d("outside if","not pass");
-                            }
-
-                        }
-                    }
-                }
+                                Log.d("outside if","not pass");}}}}}
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
             }
+        });
+    }
+    private void fmatchItemsWatch(String fbrandname, String fmodelname, String fcolorname,
+                                  String funiquefeature,
+                                  String fdatelost, String fselectedWatch,String fselectedplace, String imageURL) {
+        fcompareRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Log.d("inside match function","pass");
+                for (DataSnapshot registerSnapshot : snapshot.getChildren()) {
+                    String registerid = registerSnapshot.getKey();
+                    Log.d("for1",registerid);
+                    boolean found = registerSnapshot.hasChild("lost");
+                    if (found) {
+                        Log.d("Boolean","True");
+                        for (DataSnapshot foundSnapshot : registerSnapshot.child("lost").getChildren()) {
+                            String itemName = foundSnapshot.getKey();
+                            Log.d("for2", itemName);
+                            if (itemName.equals(fselectedValue)) {
+                                Log.d("item","equals");
+                                String fBRAND = foundSnapshot.child("Brand Name").getValue(String.class);
+                                String fMODEL = foundSnapshot.child("Model Name").getValue(String.class);
+                                String fCOLOR = foundSnapshot.child("Color").getValue(String.class);
+                                String fUNIQUE = foundSnapshot.child("Uniqueness").getValue(String.class);
+                                String fPLACE = foundSnapshot.child("Location").getValue(String.class);
+                                String fDATE = foundSnapshot.child("Date").getValue(String.class);
+                                String fWATCHTYPE = foundSnapshot.child("Watch Type").getValue(String.class);
 
+                                if (fBRAND.equals(fbrandname) && fMODEL.equals(fmodelname)
+                                        && fCOLOR.equals(fcolorname) && fUNIQUE.equals(funiquefeature)
+                                        && fPLACE.equals(fselectedplace) && fWATCHTYPE.equals(fselectedWatch)
+                                        && fDATE.equals(fdatelost)) {
+                                    ffromLoginOrCreateAccount = getIntent().getStringExtra("MyAccountActivity");
+                                    if (ffromLoginOrCreateAccount.equals("LoginActivity") || ffromLoginOrCreateAccount.equals(" ")) {
 
+                                        fcacheForFoundFromLogin = getSharedPreferences("MyPreferencesFromLogin", MODE_PRIVATE);
+                                        String foundPersonRegId = fcacheForFoundFromLogin.getString("useridfromlogin", "");
+                                        String foundPersonEmail = fcacheForFoundFromLogin.getString("emailfromlogin", "");
+                                        String foundPersonDept = fcacheForFoundFromLogin.getString("deptfromlogin", "");
+                                        String foundPersonSec = fcacheForFoundFromLogin.getString("sectionfromlogin", "");
+                                        Log.d("inside if from login", "pass");
+                                        Log.d("image", imageURL);
+                                        String fLostEmail = registerSnapshot.child("email").getValue(String.class);
+                                        sendEmailFound(foundPersonRegId, foundPersonEmail, foundPersonDept, foundPersonSec, fLostEmail, imageURL);
+                                    }
+                                    else{
+                                        fcacheForFoundFromCreateAccount = getSharedPreferences("MyPreferencesFromCreateAccount",MODE_PRIVATE);
+                                        String foundPersonRegId = fcacheForFoundFromCreateAccount.getString("cacheUserID","");
+                                        String foundPersonEmail = fcacheForFoundFromCreateAccount.getString("cacheEmail","");
+                                        String foundPersonDept =fcacheForFoundFromCreateAccount.getString("cacheDepartment","");
+                                        String foundPersonSec = fcacheForFoundFromCreateAccount.getString("cacheSection","");
+                                        Log.d("inside if from createacc","pass");
+                                        String fLostEmail = registerSnapshot.child("email").getValue(String.class);
+                                        sendEmailFound(foundPersonRegId, foundPersonEmail, foundPersonDept, foundPersonSec, fLostEmail,imageURL);
+                                    }
+                                }
+                                Log.d("outside if","not pass");}}}}}
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+    private void fmatchItemsBag(String fbrandname, String fmodelname,
+                                  String fcolorname, String funiquefeature,
+                                  String fdatelost, String fselectedplace,String fselectedBag,
+                                String imageURL) {
+        fcompareRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Log.d("inside match function","pass");
+                for (DataSnapshot registerSnapshot : snapshot.getChildren()) {
+                    String registerid = registerSnapshot.getKey();
+                    Log.d("for1",registerid);
+                    boolean found = registerSnapshot.hasChild("lost");
+                    if (found) {
+                        Log.d("Boolean","True");
+                        for (DataSnapshot foundSnapshot : registerSnapshot.child("lost").getChildren()) {
+                            String itemName = foundSnapshot.getKey();
+                            Log.d("for2", itemName);
+                            if (itemName.equals(fselectedValue)) {
+                                Log.d("item","equals");
+                                String fBRAND = foundSnapshot.child("Brand Name").getValue(String.class);
+                                String fMODEL = foundSnapshot.child("Model Name").getValue(String.class);
+                                String fCOLOR = foundSnapshot.child("Color").getValue(String.class);
+                                String fUNIQUE = foundSnapshot.child("Uniqueness").getValue(String.class);
+                                String fPLACE = foundSnapshot.child("Location").getValue(String.class);
+                                String fDATE = foundSnapshot.child("Date").getValue(String.class);
+                                String fBAGTYPE = foundSnapshot.child("Bag Type").getValue(String.class);
+
+                                if (fBRAND.equals(fbrandname) && fMODEL.equals(fmodelname)
+                                        && fCOLOR.equals(fcolorname) && fUNIQUE.equals(funiquefeature)
+                                        && fPLACE.equals(fselectedplace) && fBAGTYPE.equals(fselectedBag)
+                                        && fDATE.equals(fdatelost)) {
+                                    ffromLoginOrCreateAccount = getIntent().getStringExtra("MyAccountActivity");
+                                    if (ffromLoginOrCreateAccount.equals("LoginActivity") || ffromLoginOrCreateAccount.equals(" ")) {
+
+                                        fcacheForFoundFromLogin = getSharedPreferences("MyPreferencesFromLogin", MODE_PRIVATE);
+                                        String foundPersonRegId = fcacheForFoundFromLogin.getString("useridfromlogin", "");
+                                        String foundPersonEmail = fcacheForFoundFromLogin.getString("emailfromlogin", "");
+                                        String foundPersonDept = fcacheForFoundFromLogin.getString("deptfromlogin", "");
+                                        String foundPersonSec = fcacheForFoundFromLogin.getString("sectionfromlogin", "");
+                                        Log.d("inside if from login", "pass");
+                                        Log.d("image", imageURL);
+                                        String fLostEmail = registerSnapshot.child("email").getValue(String.class);
+                                        sendEmailFound(foundPersonRegId, foundPersonEmail, foundPersonDept, foundPersonSec, fLostEmail, imageURL);
+                                    }
+                                    else{
+                                        fcacheForFoundFromCreateAccount = getSharedPreferences("MyPreferencesFromCreateAccount",MODE_PRIVATE);
+                                        String foundPersonRegId = fcacheForFoundFromCreateAccount.getString("cacheUserID","");
+                                        String foundPersonEmail = fcacheForFoundFromCreateAccount.getString("cacheEmail","");
+                                        String foundPersonDept =fcacheForFoundFromCreateAccount.getString("cacheDepartment","");
+                                        String foundPersonSec = fcacheForFoundFromCreateAccount.getString("cacheSection","");
+                                        String foundImageLink = foundSnapshot.child("Imageurl").getValue(String.class);
+                                        Log.d("inside if from createacc","pass");
+                                        String fLostEmail = registerSnapshot.child("email").getValue(String.class);
+                                        sendEmailFound(foundPersonRegId, foundPersonEmail, foundPersonDept, foundPersonSec, fLostEmail,imageURL);
+                                    }
+                                }
+                                Log.d("outside if","not pass");}}}}}
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+    private void fmatchItemsPurse(String fbrandname,
+                                  String fcolorname, String funiquefeature,
+                                  String fdatelost, String fselectedplace, String imageURL) {
+        fcompareRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Log.d("inside match function","pass");
+                for (DataSnapshot registerSnapshot : snapshot.getChildren()) {
+                    String registerid = registerSnapshot.getKey();
+                    Log.d("for1",registerid);
+                    boolean found = registerSnapshot.hasChild("lost");
+                    if (found) {
+                        Log.d("Boolean","True");
+                        for (DataSnapshot foundSnapshot : registerSnapshot.child("lost").getChildren()) {
+                            String itemName = foundSnapshot.getKey();
+                            Log.d("for2", itemName);
+                            if (itemName.equals(fselectedValue)) {
+                                Log.d("item","equals");
+                                String fBRAND = foundSnapshot.child("Brand Name").getValue(String.class);
+                                String fCOLOR = foundSnapshot.child("Color").getValue(String.class);
+                                String fUNIQUE = foundSnapshot.child("Uniqueness").getValue(String.class);
+                                String fPLACE = foundSnapshot.child("Location").getValue(String.class);
+                                String fDATE = foundSnapshot.child("Date").getValue(String.class);
+
+                                if (fBRAND.equals(fbrandname) && fCOLOR.equals(fcolorname) && fUNIQUE.equals(funiquefeature)
+                                        && fPLACE.equals(fselectedplace)
+                                        && fDATE.equals(fdatelost)) {
+                                    ffromLoginOrCreateAccount = getIntent().getStringExtra("MyAccountActivity");
+                                    if (ffromLoginOrCreateAccount.equals("LoginActivity") || ffromLoginOrCreateAccount.equals(" ")) {
+
+                                        fcacheForFoundFromLogin = getSharedPreferences("MyPreferencesFromLogin", MODE_PRIVATE);
+                                        String foundPersonRegId = fcacheForFoundFromLogin.getString("useridfromlogin", "");
+                                        String foundPersonEmail = fcacheForFoundFromLogin.getString("emailfromlogin", "");
+                                        String foundPersonDept = fcacheForFoundFromLogin.getString("deptfromlogin", "");
+                                        String foundPersonSec = fcacheForFoundFromLogin.getString("sectionfromlogin", "");
+                                        Log.d("inside if from login", "pass");
+                                        Log.d("image", imageURL);
+                                        String fLostEmail = registerSnapshot.child("email").getValue(String.class);
+                                        sendEmailFound(foundPersonRegId, foundPersonEmail, foundPersonDept, foundPersonSec, fLostEmail, imageURL);
+                                    }
+                                    else{
+                                        fcacheForFoundFromCreateAccount = getSharedPreferences("MyPreferencesFromCreateAccount",MODE_PRIVATE);
+                                        String foundPersonRegId = fcacheForFoundFromCreateAccount.getString("cacheUserID","");
+                                        String foundPersonEmail = fcacheForFoundFromCreateAccount.getString("cacheEmail","");
+                                        String foundPersonDept =fcacheForFoundFromCreateAccount.getString("cacheDepartment","");
+                                        String foundPersonSec = fcacheForFoundFromCreateAccount.getString("cacheSection","");
+                                        String foundImageLink = foundSnapshot.child("Imageurl").getValue(String.class);
+                                        Log.d("inside if from createacc","pass");
+                                        String fLostEmail = registerSnapshot.child("email").getValue(String.class);
+                                        sendEmailFound(foundPersonRegId, foundPersonEmail, foundPersonDept, foundPersonSec, fLostEmail,imageURL);
+                                    }
+                                }
+                                Log.d("outside if","not pass");}}}}}
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+    private void fmatchItemsHeadphone(String fbrandname, String fmodelname,
+                                  String fcolorname, String funiquefeature,
+                                  String fdatelost, String fselectedheadphone,String fselectedplace, String imageURL) {
+        fcompareRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Log.d("inside match function","pass");
+                for (DataSnapshot registerSnapshot : snapshot.getChildren()) {
+                    String registerid = registerSnapshot.getKey();
+                    Log.d("for1",registerid);
+                    boolean found = registerSnapshot.hasChild("lost");
+                    if (found) {
+                        Log.d("Boolean","True");
+                        for (DataSnapshot foundSnapshot : registerSnapshot.child("lost").getChildren()) {
+                            String itemName = foundSnapshot.getKey();
+                            Log.d("for2", itemName);
+                            if (itemName.equals(fselectedValue)) {
+                                Log.d("item","equals");
+                                String fBRAND = foundSnapshot.child("Brand Name").getValue(String.class);
+                                String fMODEL = foundSnapshot.child("Model Name").getValue(String.class);
+                                String fCOLOR = foundSnapshot.child("Color").getValue(String.class);
+                                String fUNIQUE = foundSnapshot.child("Uniqueness").getValue(String.class);
+                                String fPLACE = foundSnapshot.child("Location").getValue(String.class);
+                                String fDATE = foundSnapshot.child("Date").getValue(String.class);
+                                String fHEADTYPE = foundSnapshot.child("Headphone Type").getValue(String.class);
+
+                                if (fBRAND.equals(fbrandname) && fMODEL.equals(fmodelname)
+                                        && fCOLOR.equals(fcolorname) && fUNIQUE.equals(funiquefeature)
+                                        && fPLACE.equals(fselectedplace) && fHEADTYPE.equals(fselectedheadphone)
+                                        && fDATE.equals(fdatelost)) {
+                                    ffromLoginOrCreateAccount = getIntent().getStringExtra("MyAccountActivity");
+                                    if (ffromLoginOrCreateAccount.equals("LoginActivity") || ffromLoginOrCreateAccount.equals(" ")) {
+
+                                        fcacheForFoundFromLogin = getSharedPreferences("MyPreferencesFromLogin", MODE_PRIVATE);
+                                        String foundPersonRegId = fcacheForFoundFromLogin.getString("useridfromlogin", "");
+                                        String foundPersonEmail = fcacheForFoundFromLogin.getString("emailfromlogin", "");
+                                        String foundPersonDept = fcacheForFoundFromLogin.getString("deptfromlogin", "");
+                                        String foundPersonSec = fcacheForFoundFromLogin.getString("sectionfromlogin", "");
+                                        Log.d("inside if from login", "pass");
+                                        Log.d("image", imageURL);
+                                        String fLostEmail = registerSnapshot.child("email").getValue(String.class);
+                                        sendEmailFound(foundPersonRegId, foundPersonEmail, foundPersonDept, foundPersonSec, fLostEmail, imageURL);
+                                    }
+                                    else{
+                                        fcacheForFoundFromCreateAccount = getSharedPreferences("MyPreferencesFromCreateAccount",MODE_PRIVATE);
+                                        String foundPersonRegId = fcacheForFoundFromCreateAccount.getString("cacheUserID","");
+                                        String foundPersonEmail = fcacheForFoundFromCreateAccount.getString("cacheEmail","");
+                                        String foundPersonDept =fcacheForFoundFromCreateAccount.getString("cacheDepartment","");
+                                        String foundPersonSec = fcacheForFoundFromCreateAccount.getString("cacheSection","");
+                                        String foundImageLink = foundSnapshot.child("Imageurl").getValue(String.class);
+                                        Log.d("inside if from createacc","pass");
+                                        String fLostEmail = registerSnapshot.child("email").getValue(String.class);
+                                        sendEmailFound(foundPersonRegId, foundPersonEmail, foundPersonDept, foundPersonSec, fLostEmail,imageURL);
+                                    }
+                                }
+                                Log.d("outside if","not pass");}}}}}
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
@@ -433,15 +674,25 @@ public class FoundForm extends AppCompatActivity {
     }
 
 
-    private void sendEmailFound(String foundPersonRegId, String foundPersonEmail, String foundPersonDept, String foundPersonSec, String foundImageLink, String flostPersonEmail) {
+    private void sendEmailFound(String foundPersonRegId, String foundPersonEmail,
+                                String foundPersonDept, String foundPersonSec,
+                                String flostPersonEmail, String foundImageLink) {
         String Subject = "LostAndFound";
-        String Message = "Hello, it's from Lost and Found. It seems like that I have found the thing you've lost. See below for the founded person details:\nRegister ID: "+
+        String Message = "Hey, it's from Lost and Found. It seems like that I have found the thing you've lost. See below for the founded person details:\nRegister ID: "+
                 foundPersonRegId+"\nDepartment: "+foundPersonDept+"\nSection: "+foundPersonSec+"\nEmail: "+foundPersonEmail+
                 "\nImage Link: "+foundImageLink+"\n\nIGNORE IF THIS IS NOT YOUR THING!!!";
         JavaMailAPI fjavaMailAPI = new JavaMailAPI(this, flostPersonEmail, Subject, Message);
         fjavaMailAPI.execute();
 
     }
+//    private void sendEmailNotFound() {
+//        String subjectNotFound = "LostAndFound";
+//        String messageNotFound = "Hello, it's from Lost and Found. Sorry to inform that it seems " +
+//                "like there is no match with your lost thing details as of now! But don't lose hope you will be emailed if someone found " +
+//                "your thing and post it in the application! \nThank You.";
+//        JavaMailAPI javaMailAPINotFound = new JavaMailAPI(this, flostPersonEmail, subjectNotFound,messageNotFound);
+//        javaMailAPINotFound.execute();
+//    }
 
     private void fpostToDBwatch (String registerNum){
             fbrandname = fbrandNameEditText.getText().toString();
@@ -473,6 +724,7 @@ public class FoundForm extends AppCompatActivity {
                 });
                 fintcall();
             }
+            fmatchItemsWatch(fbrandname,fmodelname,fcolorname,funiquefeature,fdatelost,fselectedWatch,fselectedplace,imageURL);
         }
         private void fpostToDBbag (String registerNum){
             fbrandname = fbrandNameEditText.getText().toString();
@@ -504,6 +756,7 @@ public class FoundForm extends AppCompatActivity {
                 });
                 fintcall();
             }
+            fmatchItemsBag(fbrandname,fmodelname,fcolorname,funiquefeature,fdatelost,fselectedBag,fselectedplace,imageURL);
 
         }
 
@@ -534,6 +787,7 @@ public class FoundForm extends AppCompatActivity {
                 });
                 fintcall();
             }
+            fmatchItemsPurse(fbrandname,fcolorname,funiquefeature,fdatelost,fselectedplace,imageURL);
         }
         private void fpostToDBhead (String registerNum){
             fbrandname = fbrandNameEditText.getText().toString();
@@ -565,6 +819,7 @@ public class FoundForm extends AppCompatActivity {
                 });
                 fintcall();
             }
+            fmatchItemsHeadphone(fbrandname,fmodelname,fcolorname,funiquefeature,fdatelost,fselectedheadphone,fselectedplace,imageURL);
         }
         private void fintcall () {
             Intent tosuccesspost = new Intent(FoundForm.this, SuccessfulPost.class);

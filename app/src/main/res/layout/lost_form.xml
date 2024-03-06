@@ -64,14 +64,17 @@
             android:hint="Brand Name"
             android:textColor="@color/white"
             android:textColorHint="@color/white" />
-       <EditText
-           android:id="@+id/Model"
-           android:layout_width="match_parent"
-           android:layout_height="43dp"
-           android:layout_marginBottom="12dp"
-           android:background="@drawable/cutomized_edittext"
-           android:hint="Model"
-           android:textColorHint="@color/white" />
+
+        <EditText
+            android:id="@+id/Model"
+            android:layout_width="match_parent"
+            android:layout_height="43dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/cutomized_edittext"
+            android:hint="Model"
+            android:textColor="#FFFFFF"
+            android:textColorHint="@color/white" />
+
         <EditText
             android:id="@+id/IMEI"
             android:layout_width="210dp"
@@ -79,6 +82,7 @@
             android:layout_marginBottom="12dp"
             android:background="@drawable/cutomized_edittext"
             android:hint="IMEI Number"
+            android:textColor="#FFFFFF"
             android:textColorHint="@color/white"
             tools:layout_editor_absoluteX="101dp"
             tools:layout_editor_absoluteY="218dp" />
@@ -90,6 +94,7 @@
             android:layout_marginBottom="12dp"
             android:background="@drawable/cutomized_edittext"
             android:hint="Color"
+            android:textColor="#FFFFFF"
             android:textColorHint="@color/white"
             tools:layout_editor_absoluteX="101dp"
             tools:layout_editor_absoluteY="218dp" />
@@ -101,6 +106,7 @@
             android:layout_marginBottom="12dp"
             android:background="@drawable/cutomized_edittext"
             android:hint="Uniqueness"
+            android:textColor="#FFFFFF"
             android:textColorHint="@color/white"
             tools:layout_editor_absoluteX="101dp"
             tools:layout_editor_absoluteY="218dp" />
@@ -114,6 +120,7 @@
             android:ems="10"
             android:hint="Date Of lost"
             android:inputType="date"
+            android:textColor="#FFFFFF"
             android:textColorHint="@color/white" />
 
 

@@ -336,8 +336,11 @@ public class LostForm extends AppCompatActivity {
                                     sendEmailFound(foundPersonRegId,foundPersonEmail,foundPersonDept,foundPersonSec,foundImageLink,lostPersonEmail);
                                     Log.d("item", "found");
                                 } else {
+                                    sendEmailNotFound();
                                     Log.d("item", "not found");
                                 }
+                            }else{
+                                sendEmailNotFound();
                             }
 
                         }
@@ -418,8 +421,11 @@ public class LostForm extends AppCompatActivity {
                                     sendEmailFound(foundPersonRegId,foundPersonEmail,foundPersonDept,foundPersonSec,foundImageLink,lostPersonEmail);
                                     Log.d("item", "found");
                                 } else {
+                                    sendEmailNotFound();
                                     Log.d("item", "not found");
                                 }
+                            }else{
+                                sendEmailNotFound();
                             }
 
                         }
@@ -494,8 +500,11 @@ public class LostForm extends AppCompatActivity {
                                     sendEmailFound(foundPersonRegId,foundPersonEmail,foundPersonDept,foundPersonSec,foundImageLink,lostPersonEmail);
                                     Log.d("item", "found");
                                 } else {
+                                    sendEmailNotFound();
                                     Log.d("item", "not found");
                                 }
+                            }else {
+                                sendEmailNotFound();
                             }
 
                         }
@@ -576,8 +585,11 @@ public class LostForm extends AppCompatActivity {
                                     sendEmailFound(foundPersonRegId,foundPersonEmail,foundPersonDept,foundPersonSec,foundImageLink,lostPersonEmail);
                                     Log.d("item", "found");
                                 } else {
+                                    sendEmailNotFound();
                                     Log.d("item", "not found");
                                 }
+                            }else{
+                                sendEmailNotFound();
                             }
 
                         }
@@ -633,6 +645,8 @@ public class LostForm extends AppCompatActivity {
                                             sendEmailNotFound();
                                             Log.d("item", "not found");
                                         }
+                            }else{
+                                sendEmailNotFound();
                             }
 
                         }
@@ -649,7 +663,7 @@ public class LostForm extends AppCompatActivity {
 
     private void sendEmailNotFound() {
         String subjectNotFound = "LostAndFound";
-        String messageNotFound = "Hello, it's from Lost and Found. Sorry to inform that it seems " +
+        String messageNotFound = "Hey, it's from Lost and Found. Sorry to inform that it seems " +
                 "like there is no match with your lost thing details as of now! But don't lose hope you will be emailed if someone found " +
                 "your thing and post it in the application! \nThank You.";
         JavaMailAPI javaMailAPINotFound = new JavaMailAPI(this, lostPersonEmail, subjectNotFound,messageNotFound);
