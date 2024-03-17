@@ -74,10 +74,10 @@ public class CreateAccountPage extends AppCompatActivity {
             Toast.makeText(CreateAccountPage.this, "Enter Register Number", Toast.LENGTH_SHORT).show();
             return;
         }
-//        else if (num.length()<13){
-//            Toast.makeText(CreateAccountPage.this, "Enter Valid Register Number", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
+        else if (num.length()<10){
+            Toast.makeText(CreateAccountPage.this, "Enter a Valid Register Number", Toast.LENGTH_SHORT).show();
+            return;
+        }
         else if (password.isEmpty()){
             Toast.makeText(CreateAccountPage.this, "Enter Password", Toast.LENGTH_SHORT).show();
             return;

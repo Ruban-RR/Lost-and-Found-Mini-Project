@@ -72,8 +72,10 @@ public class Login extends AppCompatActivity {
                     return;
                 }
                 else if (passwordfield.isEmpty()) {
-                    Toast.makeText(Login.this, "Enter Password", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Login.this, "Enter Password!", Toast.LENGTH_SHORT).show();
                     return;
+                } else if (numberfield.length() < 10) {
+                    Toast.makeText(Login.this, "Enter a valid register number!",Toast.LENGTH_SHORT).show();
                 }
 
                 loginFunc(numberfield, passwordfield);

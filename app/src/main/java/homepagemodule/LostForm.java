@@ -24,6 +24,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Random;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.security.auth.Subject;
 
 public class LostForm extends AppCompatActivity {
@@ -85,7 +90,7 @@ public class LostForm extends AppCompatActivity {
 
             }
         });
-        String[] Placesoflost = {"-Place of lost-", "1", "2", "3"};
+        String[] Placesoflost = {"-Place of lost-", "Sind Block", "Harkrishna Block", "Arjan Dev Block","Teg Bahudur Auditorium","Guru Amar Das Block","Maharani Vidyavati Block","Stone Benches","Kaapi Kudil","Canteen","Assembly Square"};
         ArrayAdapter<String> adapter4 = new ArrayAdapter<>(LostForm.this, android.R.layout.simple_spinner_item, Placesoflost);
         adapter4.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinPlace.setAdapter(adapter4);
@@ -132,10 +137,12 @@ public class LostForm extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         Spinner spin = findViewById(R.id.lostthing);
         spin.setAdapter(adapter);
+
         spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 // Get the selected item
+
                 selectedValue = items[position];
                 llc.setVisibility(View.VISIBLE);
                 brandNameEditText.setVisibility(View.VISIBLE);
@@ -238,21 +245,26 @@ public class LostForm extends AppCompatActivity {
         });
     }
         private void postToDBphone(String registerNum){
+            UUID randomKey1 = UUID.randomUUID();
+            String uniqueKey1 = randomKey1.toString();
             brandname = brandNameEditText.getText().toString().toLowerCase().trim();
             modelname = modelNameEditText.getText().toString().toLowerCase().trim();
             imeinum = imeiEditText.getText().toString().toLowerCase().trim();
             colorname = colorEditText.getText().toString().toLowerCase().trim();
             uniquefeature = uniqueEditText.getText().toString().toLowerCase().trim();
             datelost = dateOfLostEditText.getText().toString().toLowerCase().trim();
+            if (!(isValidDate(datelost))){
+                Toast.makeText(LostForm.this, "Enter a valid date format!",Toast.LENGTH_SHORT ).show();
+            }
 
-            if (brandname.isEmpty()||modelname.isEmpty()||imeinum.isEmpty()||colorname.isEmpty()||
+            else if (brandname.isEmpty()||modelname.isEmpty()||imeinum.isEmpty()||colorname.isEmpty()||
                     uniquefeature.isEmpty()|| datelost.isEmpty() || selectedplace.isEmpty()) {
                 Toast.makeText(LostForm.this, "Enter the blank fields!", Toast.LENGTH_SHORT).show();
             }else{
             lostdb.child("users").child(registerNum).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    DatabaseReference ref = lostdb.child("users").child(registerNum).child("lost").child(selectedValue);
+                    DatabaseReference ref = lostdb.child("users").child(registerNum).child("lost").child(selectedValue+uniqueKey1);
                     ref.child("Brand Name").setValue(brandname);
                     ref.child("Model Name").setValue(modelname);
                     ref.child("IMEI Number").setValue(imeinum);
@@ -267,17 +279,29 @@ public class LostForm extends AppCompatActivity {
             intcall();
             }
             Log.d("before method call","yes");
-            matchItemsPhone(selectedValue,brandname,modelname,imeinum,colorname,
+            matchItemsPhone(selectedValue+uniqueKey1,brandname,modelname,imeinum,colorname,
                     uniquefeature, datelost,selectedplace);
 
         }
-        private void postToDBwatch(String registerNum){
+
+    private boolean isValidDate(String datelost) {
+        String regex = "^(1[0-2]|0[1-9])/(3[01]"
+                + "|[12][0-9]|0[1-9])/[0-9]{4}$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher((CharSequence)datelost);
+        return matcher.matches();
+    }
+
+    private void postToDBwatch(String registerNum){
             brandname = brandNameEditText.getText().toString().toLowerCase().trim();
             modelname = modelNameEditText.getText().toString().toLowerCase().trim();
             colorname = colorEditText.getText().toString().toLowerCase().trim();
             uniquefeature = uniqueEditText.getText().toString().toLowerCase().trim();
             datelost = dateOfLostEditText.getText().toString().toLowerCase().trim();
-            if (brandname.isEmpty()||modelname.isEmpty()||colorname.isEmpty()||selectedWatch.isEmpty()||
+        if (!(isValidDate(datelost))){
+            Toast.makeText(LostForm.this, "Enter a valid date format!",Toast.LENGTH_SHORT ).show();
+        }
+            else if (brandname.isEmpty()||modelname.isEmpty()||colorname.isEmpty()||selectedWatch.isEmpty()||
                     uniquefeature.isEmpty()|| datelost.isEmpty() || selectedplace.isEmpty()) {
                 Toast.makeText(LostForm.this, "Enter the blank fields!", Toast.LENGTH_SHORT).show();
             }else{
@@ -362,7 +386,10 @@ public class LostForm extends AppCompatActivity {
         colorname = colorEditText.getText().toString().toLowerCase().trim();
         uniquefeature = uniqueEditText.getText().toString().toLowerCase().trim();
         datelost = dateOfLostEditText.getText().toString().toLowerCase().trim();
-        if (brandname.isEmpty()||modelname.isEmpty()||colorname.isEmpty()||
+        if (!(isValidDate(datelost))){
+            Toast.makeText(LostForm.this, "Enter a valid date format!",Toast.LENGTH_SHORT ).show();
+        }
+        else if (brandname.isEmpty()||modelname.isEmpty()||colorname.isEmpty()||
                 uniquefeature.isEmpty()|| datelost.isEmpty() || selectedplace.isEmpty()||selectedBag.isEmpty()) {
             Toast.makeText(LostForm.this, "Enter the blank fields!", Toast.LENGTH_SHORT).show();
         }else{
@@ -445,7 +472,10 @@ public class LostForm extends AppCompatActivity {
             colorname = colorEditText.getText().toString().toLowerCase().trim();
             uniquefeature = uniqueEditText.getText().toString().toLowerCase().trim();
             datelost = dateOfLostEditText.getText().toString().toLowerCase().trim();
-        if (brandname.isEmpty()||colorname.isEmpty()||
+        if (!(isValidDate(datelost))){
+            Toast.makeText(LostForm.this, "Enter a valid date format!",Toast.LENGTH_SHORT ).show();
+        }
+       else if (brandname.isEmpty()||colorname.isEmpty()||
                 uniquefeature.isEmpty()|| datelost.isEmpty() || selectedplace.isEmpty()) {
             Toast.makeText(LostForm.this, "Enter the blank fields!", Toast.LENGTH_SHORT).show();
         }else{
@@ -525,7 +555,10 @@ public class LostForm extends AppCompatActivity {
             colorname = colorEditText.getText().toString().toLowerCase().trim();
             uniquefeature = uniqueEditText.getText().toString().toLowerCase().trim();
             datelost = dateOfLostEditText.getText().toString().toLowerCase().trim();
-            if (brandname.isEmpty()||modelname.isEmpty()||colorname.isEmpty()||
+        if (!(isValidDate(datelost))){
+            Toast.makeText(LostForm.this, "Enter a valid date format!",Toast.LENGTH_SHORT ).show();
+        }
+            else if (brandname.isEmpty()||modelname.isEmpty()||colorname.isEmpty()||
                     uniquefeature.isEmpty()|| datelost.isEmpty() || selectedplace.isEmpty()||selectedheadphone.isEmpty()) {
                 Toast.makeText(LostForm.this, "Enter the blank fields!", Toast.LENGTH_SHORT).show();
             }else{
@@ -620,7 +653,7 @@ public class LostForm extends AppCompatActivity {
                         for (DataSnapshot foundSnapshot : registerSnapshot.child("found").getChildren()) {
                             String itemName = foundSnapshot.getKey();
                             //Log.d("for2", itemName);
-                            if (itemName.equals(selectedValue)) {
+                            if (itemName.contains(selectedValue)) {
                                // Log.d("item","equals");
                                         String BRAND = foundSnapshot.child("Brand Name").getValue(String.class);
                                         String MODEL = foundSnapshot.child("Model Name").getValue(String.class);
@@ -663,7 +696,7 @@ public class LostForm extends AppCompatActivity {
 
     private void sendEmailNotFound() {
         String subjectNotFound = "LostAndFound";
-        String messageNotFound = "Hey, it's from Lost and Found. Sorry to inform that it seems " +
+        String messageNotFound = "Heyy, \n\nIt's from Lost and Found. Sorry to inform that it seems " +
                 "like there is no match with your lost thing details as of now! But don't lose hope you will be emailed if someone found " +
                 "your thing and post it in the application! \nThank You.";
         JavaMailAPI javaMailAPINotFound = new JavaMailAPI(this, lostPersonEmail, subjectNotFound,messageNotFound);
@@ -677,7 +710,7 @@ public class LostForm extends AppCompatActivity {
                                 String foundImageLink,
                                 String lostPersonEmail) {
         String Subject = "LostAndFound";
-        String Message = "Hello, it's from Lost and Found. It seems like that I have found the thing you've lost. See below for the founded person details:\nRegister ID: "+
+        String Message = "Heyy, \n\nIt's from Lost and Found. It seems like that I have found the thing you've lost. See below for the founded person details:\nRegister ID: "+
                 foundPersonRegId+"\nDepartment: "+foundPersonDept+"\nSection: "+foundPersonSec+"\nEmail: "+foundPersonEmail+
                 "\nImage Link: "+foundImageLink+"\n\nIGNORE IF THIS IS NOT YOUR THING!!!";
         JavaMailAPI javaMailAPI = new JavaMailAPI(this, lostPersonEmail, Subject, Message);

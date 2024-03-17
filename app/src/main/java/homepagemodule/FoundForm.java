@@ -36,6 +36,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FoundForm extends AppCompatActivity {
 
@@ -114,7 +116,7 @@ public class FoundForm extends AppCompatActivity {
 
             }
         });
-        String[] Placesoflost = {"-Select Place-", "1", "2", "3"};
+        String[] Placesoflost = {"-Place of Lost-", "Sind Block", "Harkrishna Block", "Arjan Dev Block","Teg Bahudur Auditorium","Guru Amar Das Block","Maharani Vidyavati Block","Stone Benches","Kaapi Kudil","Canteen","Assembly Square"};
         ArrayAdapter<String> adapter4 = new ArrayAdapter<>(FoundForm.this, android.R.layout.simple_spinner_item, Placesoflost);
         adapter4.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         fspinPlace.setAdapter(adapter4);
@@ -336,8 +338,11 @@ public class FoundForm extends AppCompatActivity {
         fcolorname = fcolorEditText.getText().toString();
         funiquefeature = funiqueEditText.getText().toString();
         fdatelost = fdateOfLostEditText.getText().toString();
+        if (!(isValidDate(fdatelost))){
+            Toast.makeText(FoundForm.this, "Enter a valid date format!",Toast.LENGTH_SHORT ).show();
+        }
 
-        if (fbrandname.isEmpty() || fmodelname.isEmpty() || fimeinum.isEmpty() || fcolorname.isEmpty() ||
+        else if (fbrandname.isEmpty() || fmodelname.isEmpty() || fimeinum.isEmpty() || fcolorname.isEmpty() ||
                 funiquefeature.isEmpty() || fdatelost.isEmpty() || fselectedplace.isEmpty() || fimageview.getDrawable() == null){
             Toast.makeText(FoundForm.this, "Enter the blank fields! ", Toast.LENGTH_SHORT).show();
         }else{
@@ -363,6 +368,14 @@ public class FoundForm extends AppCompatActivity {
         Log.d("before post to db","pass");
         fmatchItemsPhone(fbrandname,fmodelname,fimeinum,fcolorname,
                 funiquefeature,fdatelost,fselectedplace,imageURL);
+    }
+
+    private boolean isValidDate(String fdatelost) {
+        String regex = "^(1[0-2]|0[1-9])/(3[01]"
+                + "|[12][0-9]|0[1-9])/[0-9]{4}$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher((CharSequence)fdatelost);
+        return matcher.matches();
     }
 
     private void fmatchItemsPhone(String fbrandname, String fmodelname, String fimeinum,
@@ -700,8 +713,10 @@ public class FoundForm extends AppCompatActivity {
             fcolorname = fcolorEditText.getText().toString();
             funiquefeature = funiqueEditText.getText().toString();
             fdatelost = fdateOfLostEditText.getText().toString();
-
-            if (fbrandname.isEmpty() || fmodelname.isEmpty() || fcolorname.isEmpty() || fselectedplace.isEmpty() ||
+        if (!isValidDate(fdatelost)){
+            Toast.makeText(FoundForm.this, "Enter a valid date format!",Toast.LENGTH_SHORT ).show();
+        }
+            else if (fbrandname.isEmpty() || fmodelname.isEmpty() || fcolorname.isEmpty() || fselectedplace.isEmpty() ||
                     funiquefeature.isEmpty() || fdatelost.isEmpty() || fselectedWatch.isEmpty() || fimageview.getDrawable() == null) {
                 Toast.makeText(FoundForm.this, "Enter the blank fields! ", Toast.LENGTH_SHORT).show();
             } else {
@@ -732,8 +747,10 @@ public class FoundForm extends AppCompatActivity {
             fcolorname = fcolorEditText.getText().toString();
             funiquefeature = funiqueEditText.getText().toString();
             fdatelost = fdateOfLostEditText.getText().toString();
-
-            if (fbrandname.isEmpty() || fmodelname.isEmpty() || fcolorname.isEmpty() || funiquefeature.isEmpty() ||
+            if (!(isValidDate(fdatelost))){
+                Toast.makeText(FoundForm.this, "Enter a valid date format!",Toast.LENGTH_SHORT ).show();
+            }
+            else if (fbrandname.isEmpty() || fmodelname.isEmpty() || fcolorname.isEmpty() || funiquefeature.isEmpty() ||
                     fdatelost.isEmpty() || fselectedplace.isEmpty() || fselectedBag.isEmpty() || fimageview.getDrawable() == null) {
                 Toast.makeText(FoundForm.this, "Enter the blank fields! ", Toast.LENGTH_SHORT).show();
             } else {
@@ -765,8 +782,10 @@ public class FoundForm extends AppCompatActivity {
             fcolorname = fcolorEditText.getText().toString();
             funiquefeature = funiqueEditText.getText().toString();
             fdatelost = fdateOfLostEditText.getText().toString();
-
-            if (fbrandname.isEmpty() || fcolorname.isEmpty() ||
+            if (!(isValidDate(fdatelost))){
+                Toast.makeText(FoundForm.this, "Enter a valid date format!",Toast.LENGTH_SHORT ).show();
+            }
+            else if (fbrandname.isEmpty() || fcolorname.isEmpty() ||
                     funiquefeature.isEmpty() || fdatelost.isEmpty() || fselectedplace.isEmpty() || fimageview.getDrawable() == null) {
                 Toast.makeText(FoundForm.this, "Enter the blank fields! ", Toast.LENGTH_SHORT).show();
             } else {
@@ -795,8 +814,10 @@ public class FoundForm extends AppCompatActivity {
             fcolorname = fcolorEditText.getText().toString();
             funiquefeature = funiqueEditText.getText().toString();
             fdatelost = fdateOfLostEditText.getText().toString();
-
-            if (fbrandname.isEmpty() || fmodelname.isEmpty() || fcolorname.isEmpty() ||
+            if (!(isValidDate(fdatelost))){
+                Toast.makeText(FoundForm.this, "Enter a valid date format!",Toast.LENGTH_SHORT ).show();
+            }
+            else if (fbrandname.isEmpty() || fmodelname.isEmpty() || fcolorname.isEmpty() ||
                     funiquefeature.isEmpty() || fdatelost.isEmpty() || fselectedplace.isEmpty() || fselectedheadphone.isEmpty() || fimageview.getDrawable() == null) {
                 Toast.makeText(FoundForm.this, "Enter the blank fields! ", Toast.LENGTH_SHORT).show();
             } else {

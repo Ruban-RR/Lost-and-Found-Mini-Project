@@ -122,7 +122,7 @@
             android:layout_marginBottom="12dp"
             android:background="@drawable/cutomized_edittext"
             android:ems="10"
-            android:hint="Date Of lost"
+            android:hint="Lost (dd/mm/yyyy)"
             android:inputType="date"
             android:textColor="#FFFFFF"
             android:textColorHint="@color/white" />
