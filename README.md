@@ -6,7 +6,7 @@ management of lost items.
 The application streamlines the process of reporting lost items inside college campus, 
 enabling users to quickly input essential details such as descriptions, locations, and 
 timestamps. Simultaneously, it facilitates the search for found items by implementing 
-intelligent matching algorithms, which enhance the likelihood of successful reunions.
+intelligent matching algorithms, which enhance the likelihood of successful reunions. 
 
 With a focus on user convenience and privacy, the application ensures secure 
 communication channels between individuals who have lost items and those who have found 
